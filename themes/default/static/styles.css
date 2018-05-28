@@ -1,0 +1,50 @@
+body {
+	font-family: "Georgia", serif;
+}
+
+a:link, a:active {
+	color: #113399;
+	text-decoration: none;
+}
+
+a:visited {
+	text-decoration: underline;
+}
+
+a:hover {
+    text-decoration: underline;
+	background-color: #f9f9f9;
+}
+
+div#text {
+	font-size: 1.2em;
+	line-height: 135%;
+}
+
+div#header {
+	font-size: 12pt;
+}
+
+ul#post-list {
+	list-style-type: none;
+	padding-left: 50px;
+}
+
+ul#post-list li .date {
+	color: #555555;
+	font-size: 90%;
+}
+
+h2 {
+	font-size: 120%;
+}
+
+pre {
+	margin-left: 30px;
+	padding: 4px;
+	background-color: #f9f9f9;
+}
+
+code {
+	background-color: #f9f9f9;
+}
