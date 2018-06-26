@@ -1,0 +1,63 @@
+<html>
+  <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-119994839-1');
+</script>
+
+    <title>When the compiler fixes your mistakes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+  </head>
+  <body>
+    <div id="header"><a href="index.html">home</a></div>
+    <h1>When the compiler fixes your mistakes</h1>
+    2018-06-24
+    <div id="text" style="max-width: 760px;">
+      <p>I have been working on a new feature for my <a href="https://github.com/lchsk/xstarter">terminal-based application launcher</a>. The feature itself is not important at this point although I'm happy to mention that I'm working on integrating the application launcher with Emacs. I want to be able to search for programs and run them from within Emacs using <a href="https://xstarter.org">xstarter</a>. So far, I've begun making changes to the application but I'm yet to build the Emacs interface. However, what I wanted to write about in this post, is the strange experience I have had fixing a bug.</p>
+<h2>Good intentions</h2>
+<p>Whilst preparing to make changes, I have noticed this piece of code <a href="https://github.com/lchsk/xstarter/blob/v0.7.0/src/utils.c#L46">I had written some time ago</a>.</p>
+<pre><code>    char path_cpy[1024];
+    strcpy(path_cpy, path);
+
+    record_open_file(path_cpy);
+</code></pre>
+<p>Forgive the use of <code>strcpy</code> and a magic number; the problem was that I didn't remember why I was creating a copy of <code>path</code> and passing it into <code>record_open_file()</code>. Sadly, there was no comment. I've quickly changed the call to just <code>record_open_file(path);</code> and later used <code>path</code> instead of <code>path_cpy</code>. And that's where strange things began to happen.</p>
+<p>When I tried to test it, a different program than the one I had selected would be launched. Usually, the one next to it in the list, but that wasn't really helpful. I wanted to see what's happening in the debugger, so I've built the application using debugging configuration (<code>cmake -DCMAKE_BUILD_TYPE=Debug .</code>).</p>
+<p>When I've stopped at a breakpoint in <code>record_open_file()</code>, I've noticed what the issue was: <code>path</code> was pointing at an element in <code>recent_apps</code> array, which elements were in turn referenced by the <code>results</code> array, used to present the applications list to a user. Turns out, elements in <code>recent_apps</code> can be slightly shifted (by one element, actually) when a new entry is being added. This is to be able to show the most recently launched program at the top. So the cause of this was a few mutable data structures referencing each other in a non-transparent way.</p>
+<p>But that was not the end. When I've tried to start any application, it wouldn't work at all.</p>
+<h2>Listen to your compiler</h2>
+<p>I have removed the code changes I've made when testing but that did not help. Clearly, another issue was lurking somewhere outside of the code.</p>
+<p>I remembered I've built the program for debugging. I've checked what compiler flags I'm passing in that case. Debugging version was not using any optimisation flags and the release one had <code>-O3</code> in the build configuration. In a debugging version I had a few warnings that I haven't fixed. Some of them looked particularly gravely:</p>
+<pre><code>/home/lchsk/git/xstarter/src/utils.c:103:21:
+warning: passing argument 1 of strncpy 
+from incompatible pointer type 
+[-Wincompatible-pointer-types]
+             strncpy(args[0], path_cpy, STR_SIZE);
+                     ^~~~
+In file included from /home/lchsk/git/xstarter/src/utils.c:7:0:
+/usr/include/string.h:124:14:
+note: expected char * restrict 
+but argument is of type char (*)[(sizetype)STR_SIZE]
+extern char *strncpy (char *__restrict __dest,
+              ^~~~~~~
+</code></pre>
+<p>It looked bad and pointed to a reason why the debugging version was not working. But why the release build was fine? Well, the release configuration was using the optimisation flag (<code>-O3</code>) and the compiler was able to fix the bug while applying optimisations, so the code was working as expected and the warning above was now showing up. All of that thanks to the compiler which was able to figure out what the intention of the code was (even with just <code>-O1</code> flag).</p>
+<p>Later, I fixed the code that the compiler was complaining about when <code>-O0</code> flag was on. Essentially, I've changed the definition using arrays</p>
+<p><code>char (*args[args_cnt])[STR_SIZE];</code></p>
+<p>to</p>
+<p><code>char **args = smalloc(args_cnt * sizeof(char*));</code></p>
+<p>in order to avoid passing arrays and instead using pointers directly.</p>
+<p>Compiler warnings can clearly be indispensable and ignoring them can not only lead to broken programs but also cause headaches when debugging applications built with various configurations.</p>
+
+    </div>
+    <div>
+      <a href="index.html">lchsk 2018</a>
+    </div>
+  </body>
+</html>
