@@ -1,4 +1,4 @@
-<html>
+<!DOCTYPE html>
   <head>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
@@ -15,25 +15,19 @@
     <link rel="stylesheet" type="text/css" href="static/styles.css">
   </head>
   <body>
-    <div>
-      <h1>lchsk's blog</h1>
-    <div>
-      <div>
-        <h2>posts</h2>
-        <ul id="post-list">
-          {{posts-begin}}
-          <li>{{post_link}} <span class="date">{{post_date}}</span></li>
-          {{posts-end}}
-        <ul>
-      </div>
-      <div>
-        <h2>links</h2>
-        <ul id="post-list">
-          <li><a href="https://github.com/lchsk">github</li>
-        <ul>
-      </div>
-      <div>
-        <a href="index.html">lchsk 2018</a>
-      </div>
+    <h1>lchsk's blog</h1>
+    <h2>posts</h2>
+    <ul id="post-list">
+      {{posts-begin}}
+      <li>{{post_link}} <span class="date">{{post_date}}</span></li>
+      {{posts-end}}
+    </ul>
+    <h2>links</h2>
+    <ul id="post-list">
+      <li><a href="https://github.com/lchsk">github</a></li>
+    </ul>
+    <p>
+      <a href="index.html">lchsk 2018</a>
+    </p>
   </body>
 </html>
