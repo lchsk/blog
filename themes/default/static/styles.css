@@ -8,7 +8,7 @@ a:link, a:active {
 }
 
 a:visited {
-	text-decoration: underline;
+	color: #000099;
 }
 
 a:hover {
@@ -30,8 +30,12 @@ ul#post-list {
 	padding-left: 50px;
 }
 
-ul#post-list li .date {
-	color: #555555;
+ul#post-list li {
+	margin-top: 12pt;
+}
+
+ul#post-list .date {
+	color: #111111;
 	font-size: 90%;
 }
 
