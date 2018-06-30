@@ -1,6 +1,8 @@
 ---
 title: How to set up googletest library from source?
 created: 2018-05-18T00:00:00Z
+description: The following guide provides instructions on how to compile and add googletest to a C++ project. It will use pkg-config to obtain compiler flags and can be used with a build system such as cmake.
+keywords: googletest, c++, compilation, unit testing, library, pkg-config, linux, cmake, mocking, tests
 ---
 
 I've noticed that setting up googletest (C++ unit testing library) can be tricky. When starting a new project, I had problems integrating googletest despite having no such problems with other libraries.

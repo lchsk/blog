@@ -1,6 +1,8 @@
 ---
 title: On the benefits of a text-based user interface
 created: 2018-05-28T00:00:00Z
+description: Modern user interfaces offer stunning graphic styles and impressive visual effects. However, there's a category of applications that is seemingly outdated but yet offers unparalleled productivity and unique experience in interaction with a computer.
+keywords: text user interface, emacs, xstarter, xmonad, user interface, tiling window manager, free software, keyboard
 ---
 
 Modern user interfaces offer stunning graphic styles and impressive visual effects. However, there's a category of applications that is seemingly outdated but yet offers unparalleled productivity and unique experience in interaction with a computer.
