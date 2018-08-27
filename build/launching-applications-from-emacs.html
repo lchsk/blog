@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+  <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-119994839-1');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="c, list, emacs lips, elisp, terminal, application launcher, xstarter, emacs, linux application launcher">
+    <meta name="author" content="Maciej Lechowski">
+    <title>Launching applications from Emacs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link rel="alternate" type="application/rss+xml" href="posts.xml" />
+  </head>
+  <body>
+    <div id="header"><a href="index.html">home</a></div>
+    <h1>Launching applications from Emacs</h1>
+    Published 2018-08-27
+    <div id="text" style="max-width: 760px;">
+      <p>I spent a lot of time in Emacs so I'm always looking for something new to add to my workflow. I typically start applications using <a href="https://github.com/lchsk/xstarter"><strong>xstarter</strong></a>, a command line tool written in C that uses an <a href="https://www.gnu.org/software/ncurses/">ncurses</a> interface. It allows me to quickly search an open programs I need. One of its useful features is recording applications that were recently opened and showing them on the screen so that they can be accessed quickly. Most of the time, I use it via <a href="https://xmonad.org/"><code>xmonad</code> window manager</a> where it's configured to launch with a <a href="https://github.com/lchsk/dotfiles/blob/master/xmonad.hs#L133">key shortcut</a>.</p>
+<p><img src="data/xstarter_2.png" alt="List of recently opened applications in terminal" /></p>
+<p><em>List of recently opened applications in terminal</em></p>
+<p>However, I also wanted to have access to that tool via Emacs so that I can use it even if I'm not running <code>xmonad</code>. I wrote a small <a href="https://github.com/lchsk/helm-xstarter"><strong>Emacs Lisp</strong> package</a> that offers an interface for <strong>xstarter</strong>. It uses <a href="https://github.com/emacs-helm/helm">Helm</a>, a great framework for building convenient search interfaces that many Emacs users are familiar with.</p>
+<p><img src="data/helm_xstarter.png" alt="Emacs interface for xstarter" /></p>
+<p><em>Emacs interface for <code>xstarter</code></em></p>
+<p>In order to make it work, I had to add two additional features to <code>xstarter</code> itself. Firstly, it needs to return a list of applications it has stored in cache. It's printed to the standard output; in order to get it, the Lisp package simply runs <code>xstarter -P</code> as a shell command and collects the output as a string. Secondly, I've added <code>xstarter -e</code> option which can launch any application in a separate process (so if it's run from a terminal, it's detached from it). The ELisp package uses that command to launch an application selected by a user in the Emacs interface:</p>
+<pre><code>(defun helm-xstarter-open (arg)
+  (shell-command (concat &quot;xstarter -e&quot; arg)))
+</code></pre>
+<p>It's surprisingly short at just over <a href="https://github.com/lchsk/helm-xstarter/blob/master/helm-xstarter.el">20 lines of code</a>!</p>
+<p><a href="https://github.com/lchsk/helm-xstarter/"><strong>Source on github</strong></a></p>
+
+    </div>
+    <div>
+      <a href="index.html">lchsk 2018</a> <a href="https://github.com/lchsk/scipio">generated with scipio</a>
+    </div>
+  </body>
+</html>
