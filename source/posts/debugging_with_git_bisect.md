@@ -53,6 +53,10 @@ Git will narrow down the range of suspicious revisions and you'll get to test it
 
 *Bad commit identified with git bisect*
 
+Having confirmed the bug originated in that commit, you can finish the process by 
+
+`$ git bisect reset`.
+
 We can also take a look at `git log` to see which commits we have looked at:
 
 ![Revisions tested with git bisect](data/git_bisect_log.png)
