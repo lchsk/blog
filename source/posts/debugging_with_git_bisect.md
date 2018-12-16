@@ -9,7 +9,7 @@ One of the projects I've been working on and off for some time is [derid](https:
 
 It's still in early development so it doesn't have many features you would expect from a file manager yet.
 
-After doing a little bit of clean up and refactoring recently, I've noticed that the application crashes when requested to show some directories. I've introduced a number of changes in different commits recently and I wasn't sure which one was the culprit so I decided to use `git bisect** to identify the one that had introduced the bug.
+After doing a little bit of clean up and refactoring recently, I've noticed that the application crashes when requested to show some directories. I've introduced a number of changes in different commits recently and I wasn't sure which one was the culprit so I decided to use `git bisect` to identify the one that had introduced the bug.
 
 In this kind of situation you would ideally have an idea where an issue might have been introduced. But with a larger number of commits and if more time has passed it might be very time consuming. Also, a brute-force approach of testing each revision takes a long time, too.
 
