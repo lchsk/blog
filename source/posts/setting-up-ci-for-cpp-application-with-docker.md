@@ -3,6 +3,7 @@ title: Setting up CI for a C++ application with Docker
 created: 2018-12-16T00:00:00Z
 description: How to set up continuous integration for a C++ application with Docker and open source CI service?
 keywords: C++, cpp, docker, continuous integration, ci, travis, travis ci, gtk, sanchosql, sancho
+slug: setting-up-ci-for-cpp-application-with-docker
 ---
 
 Having an automated way to build an application and run tests is a convenient way to learn about failures as quickly as possible. It's as important for businesses as it is for smaller open-source projects.

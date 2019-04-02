@@ -3,6 +3,7 @@ title: Making a turn-based strategy game in C++ in 72 hours
 created: 2018-08-18T00:00:00Z
 description: A turn-based strategy game developed for Ludum Dare 42 game jam in C++ and SFML.
 keywords: game development, games, C++, projects, ludum dare, turn-based strategy games, indie games, indie strategy games
+slug: making-a-turn-based-strategy-game-in-cpp-in-72-hours
 ---
 
 tl;dr
