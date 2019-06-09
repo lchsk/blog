@@ -21,6 +21,11 @@ div#text {
 	line-height: 135%;
 }
 
+div.article {
+	width: 760px;
+	margin: auto;
+}
+
 div#header {
 	font-size: 12pt;
 }
