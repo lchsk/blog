@@ -1,66 +1,7 @@
-<!DOCTYPE html>
-  <head>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-119994839-1');
-</script>
-
-    <meta charset="UTF-8">
-    <meta name="description" content="How to debug your code with git bisect">
-    <meta name="keywords" content="git, bisect, git bisect, debugging, command line, debug">
-    <meta name="author" content="Maciej Lechowski">
-    <title>Debugging with git bisect</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="static/styles.css">
-    <link rel="alternate" type="application/rss+xml" href="posts.xml" />
-  </head>
-  <body>
-    <div id="header"><a href="index.html">home</a></div>
-    <h1>Debugging with git bisect</h1>
-    Published 2018-09-29
-    <div id="text" style="max-width: 760px;">
-      <p>One of the projects I've been working on and off for some time is <a href="https://github.com/lchsk/derid">derid</a>. It's terminal file manager which wraps <code>ls</code> command and provides the information in the same format but in an interactive fashion. As the name suggests, it's inspired by <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html">dired</a>, the file manager that comes with Emacs (<code>derid</code> being an ananym of <code>dired</code>).</p>
-<p>It's still in early development so it doesn't have many features you would expect from a file manager yet.</p>
-<p>After doing a little bit of clean up and refactoring recently, I've noticed that the application crashes when requested to show some directories. I've introduced a number of changes in different commits recently and I wasn't sure which one was the culprit so I decided to use <code>git bisect</code> to identify the one that had introduced the bug.</p>
-<p>In this kind of situation you would ideally have an idea where an issue might have been introduced. But with a larger number of commits and if more time has passed it might be very time consuming. Also, a brute-force approach of testing each revision takes a long time, too.</p>
-<h2>How to use <code>git bisect</code>?</h2>
-<p><code>git bisect</code> uses binary search to reduce the number of commits that need to be tested to find the buggy commit.</p>
-<p>You start by moving to the root of the repository.</p>
-<p>Then, you initialise by running</p>
-<p><code>$ git bisect start</code></p>
-<p>After that, we need to provide two commit hashes:</p>
-<ul>
-<li>
-<p><code>bad</code>: where we know the bug exists</p>
-</li>
-<li>
-<p><code>good</code>: last known version without the bug</p>
-</li>
-</ul>
-<p>In my case, it was:</p>
-<p><code>$ git bisect bad 0c898b0</code></p>
-<p>and</p>
-<p><code>$ git bisect good a54d699</code></p>
-<p>Git will check out version at the commit between <code>good</code> and <code>bad</code> and inform you how many iterations are expected:</p>
-<p><code>Bisecting: 5 revisions left to test after this (roughly 3 steps)</code>.</p>
-<p>You need to test your code and then run:</p>
-<p><code>$ git bisect good</code> if the bug is gone, or</p>
-<p><code>$ git bisect bad</code> if the bug is still there.</p>
-<p>Git will narrow down the range of suspicious revisions and you'll get to test it again. After a few iterations of this process, git should identify the commit that had introduced the bug:</p>
-<p><img src="data/git_bisect_bad_commit.png" alt="Bad commit identified with git bisect" /></p>
-<p><em>Bad commit identified with git bisect</em></p>
-<p>Having confirmed the bug originated in that commit, you can finish the process by</p>
-<p><code>$ git bisect reset</code>.</p>
-<p>We can also take a look at <code>git log</code> to see which commits we have looked at:</p>
-<p><img src="data/git_bisect_log.png" alt="Revisions tested with git bisect" /></p>
-<p><em>Revisions tested with <code>git bisect</code></em></p>
-<p>We can see which commits were investigated and which ones we omitted to save some time. <code>git bisect</code> is a useful debugging tool and a great example of practical use of binary search.</p>
-
-    </div>
-  </body>
+<html>
+<head>
+<meta http-equiv="refresh" content="0; url=debugging-with-git-bisect.html">
+<body>
+<p><a href="debugging-with-git-bisect.html">Redirect</a></p>
+</body>
 </html>

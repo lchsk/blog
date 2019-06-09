@@ -24,41 +24,65 @@
     <h1>How to set up googletest library from source?</h1>
     Published 2018-05-18
     <div id="text" style="max-width: 760px;">
-      <p>I've noticed that setting up googletest (C++ unit testing library) can be tricky. When starting a new project, I had problems integrating googletest despite having no such problems with other libraries.</p>
+      <p>I&rsquo;ve noticed that setting up googletest (C++ unit testing library) can be tricky. When starting a new project, I had problems integrating googletest despite having no such problems with other libraries.</p>
+
 <p>The following guide provides instructions on how to compile and add googletest to a C++ project. It will use <code>pkg-config</code> to obtain compiler flags and can be used with a build system such as cmake.</p>
+
 <p>It is intended to work on Ubuntu but might work on other systems.</p>
+
 <h2>Download and compile googletest</h2>
+
 <p>Download latest release from <a href="https://github.com/google/googletest/releases">https://github.com/google/googletest/releases</a></p>
+
 <pre><code>wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
 </code></pre>
+
 <p>and extract it</p>
+
 <pre><code>tar xzf release-1.8.0.tar.gz
 cd googletest-release-1.8.0
 </code></pre>
+
 <p>After than, we can compile it:</p>
+
 <pre><code>mkdir build &amp;&amp; cd build
 cmake ..
 make -j
 </code></pre>
+
 <p>Now, copy the headers to a directory where compilers can find them:</p>
+
 <pre><code>sudo cp -r ../googletest/include /usr/local/include
 </code></pre>
+
 <p>Then, copy static libraries:</p>
+
 <pre><code>sudo cp -r ./googlemock/gtest/libgtest*.a /usr/local/lib/
 </code></pre>
+
 <p>Additionally, you can also add googlemock library (mocking framework):</p>
+
 <pre><code>sudo cp -r ./googlemock/libgmock*.a /usr/local/lib/
 </code></pre>
+
 <h2>Find googletest with <code>pkg-config</code></h2>
+
 <p>After compiling and installing library files, try to find the library with <code>pkg-config</code>:</p>
+
 <pre><code>pkg-config --libs --cflags gtest
 </code></pre>
-<p>If you get a message about gtest not being found (&quot;Package gtest was not found in the pkg-config search path&quot;) then it essentially means <code>pkg-config</code> cannot find gtest's <code>.pc</code> file which provides configuration.</p>
+
+<p>If you get a message about gtest not being found (&ldquo;Package gtest was not found in the pkg-config search path&rdquo;) then it essentially means <code>pkg-config</code> cannot find gtest&rsquo;s <code>.pc</code> file which provides configuration.</p>
+
 <p>It can be added in any of the directories listed by</p>
+
 <pre><code>pkg-config --variable pc_path pkg-config
 </code></pre>
+
 <p>e.g. <code>/usr/lib/pkgconfig</code></p>
+
 <p>Create a file named <code>gtest.pc</code> which should like similar to this:</p>
+
 <pre><code>prefix=/usr/local
 exec_prefix=${prefix}
 libdir=${prefix}/lib
@@ -70,37 +94,60 @@ Version: 1.8.0
 Libs: -L${libdir} -lgtest -lpthread
 Cflags: -I${includedir}
 </code></pre>
+
 <p>After that, verify that</p>
+
 <pre><code>pkg-config  --libs --cflags gtest
 </code></pre>
+
 <p>produces valid output, i.e. similar to</p>
+
 <pre><code>-I/usr/local/include -L/usr/local/lib -lgtest -lpthread
 </code></pre>
+
 <h2>Integrating googletest with cmake</h2>
+
 <p>If you use cmake to build your program, you can use <code>pkg-config</code> to find correct compilation flags.</p>
+
 <p>First, in order to add support for <code>pkg-config</code> in cmake add the following in <code>CMakeLists.txt</code>:</p>
+
 <pre><code>find_package(PkgConfig)
 </code></pre>
+
 <p>Then, find gtest with <code>pkg-config</code>:</p>
+
 <pre><code>pkg_check_modules(GTEST &quot;gtest&quot; REQUIRED)
 </code></pre>
-<p>You can verify that it's available by printing <code>GTEST_FOUND</code> variable</p>
+
+<p>You can verify that it&rsquo;s available by printing <code>GTEST_FOUND</code> variable</p>
+
 <pre><code>message(STATUS &quot;gtest found: &quot; ${GTEST_FOUND})
 </code></pre>
+
 <p>and running <code>cmake .</code> on your project.</p>
+
 <p>After you confirm cmake can find the library, just add a definition for your test executable, e.g.</p>
+
 <pre><code>add_executable(test_1
   tests/test_1.cpp
 )
 </code></pre>
+
 <p>and then link gtest with it:</p>
+
 <pre><code>target_link_libraries(test_1 ${GTEST_LIBRARIES})
 </code></pre>
+
 <p>Running build command e.g. <code>cmake . &amp;&amp; make</code> should now successfully build the executable.</p>
+
 <p>That concludes googletest setup. See the next section if you need to add googlemock (C++ mocking library).</p>
+
 <h2>Integrating googlemock with a C++ project</h2>
+
 <p>First, ensure you have copied <code>libgmock*.a</code> libraries to <code>/usr/local/lib</code> (see above).</p>
+
 <p>Create <code>gmock.pc</code> configuration file in <code>/usr/lib/pkgconfig</code> so that <code>pkg-config</code> can resolve compiler flags:</p>
+
 <pre><code>prefix=/usr/local
 exec_prefix=${prefix}
 libdir=${prefix}/lib
@@ -112,12 +159,17 @@ Version: 1.8.0
 Libs: -L${libdir} -lgmock -lpthread
 Cflags: -I${includedir}
 </code></pre>
+
 <p>Then, find gmock in <code>CMakeLists.txt</code>:</p>
+
 <pre><code>pkg_check_modules(GMOCK &quot;gmock&quot; REQUIRED)
 </code></pre>
+
 <p>Finally, link your tests with googlemock by adding <code>${GMOCK_LIBRARIES}</code> variable:</p>
+
 <pre><code>target_link_libraries(test_readdir ${GTEST_LIBRARIES} ${GMOCK_LIBRARIES})
 </code></pre>
+
 <p>After all those steps, tests using googletest/googlemock should compile correctly by executing standard commands (<code>cmake . &amp;&amp; make</code>)!</p>
 
     </div>
