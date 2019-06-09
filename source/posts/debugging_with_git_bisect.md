@@ -3,6 +3,7 @@ title: Debugging with git bisect
 created: 2018-09-29T00:00:00Z
 description: How to debug your code with git bisect
 keywords: git, bisect, git bisect, debugging, command line, debug
+redirect_from: debugging_with_git_bisect
 ---
 
 One of the projects I've been working on and off for some time is [derid](https://github.com/lchsk/derid). It's terminal file manager which wraps `ls` command and provides the information in the same format but in an interactive fashion. As the name suggests, it's inspired by [dired](https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html), the file manager that comes with Emacs (`derid` being an ananym of `dired`). 
