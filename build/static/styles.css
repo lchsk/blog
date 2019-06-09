@@ -22,8 +22,17 @@ div#text {
 }
 
 div.article {
-	width: 760px;
+	max-width: 760px;
 	margin: auto;
+}
+
+div.article img {
+	max-width: 100%;
+	height: auto;
+}
+
+div.article pre {
+	overflow-x: auto;
 }
 
 div#header {
