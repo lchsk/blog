@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+  <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-119994839-1');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="SanchoSQL - Postgres GUI client with C++ and GTK">
+    <meta name="keywords" content="c++, sanchosql, sql, sancho, postgres, databases, gui, gtk, gtkmm, gtk+">
+    <meta name="author" content="Maciej Lechowski">
+    <title>Building a Postgres GUI client with C++ and GTK (SanchoSQL)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link rel="alternate" type="application/rss+xml" href="posts.xml" />
+  </head>
+  <body>
+    <div id="header"><a href="index.html">home</a></div>
+    <h1>Building a Postgres GUI client with C++ and GTK (SanchoSQL)</h1>
+    Published 2019-06-09
+    <div id="text" style="max-width: 760px;">
+      <p>I&rsquo;ve recently published version 0.1 of SanchoSQL, a GUI client for PostgreSQL. It&rsquo;s written in C++ and designed for Linux systems. It has a <a href="https://sanchosql.com" title="SanchoSQL website">website</a> and is <a href="https://github.com/lchsk/sanchosql" title="SanchoSQL Postgres client for Linux">open source</a>.</p>
+
+<h2>Why</h2>
+
+<p>There aren&rsquo;t many Postgres GUI clients developed for Linux. Those available are usually heavy and bloated. I was looking for a minimalistic option that works fast and has a simple and intuitive interface. I wanted to build one for myself so that it includes features I need and is as small as possible.</p>
+
+<p><img src="./data/projects/sanchosql.png" alt="SanchoSQL SQL editor view" title="SanchoSQL editor view" /></p>
+
+<h2>C++ and GTK</h2>
+
+<p>I chose C++ and GTK (with GTKmm bindings) for this project which may seem not such a great idea. Writing C++ arguably slows down the pace of delivery compared to scripting languages. The interface could probably look more modern and offer more features if it used web technologies. GTK, in particular, feels old-fashioned and a bit clunky. However, I like to look at it differently. I believe that an application that&rsquo;s close to a user (such as a desktop program that someone needs to install on their computer) needs to be efficient and offer the best possible performance. Compared to, e.g. server-side software, authors of desktop applications face extra challenges. They can&rsquo;t improve infrastructure and can&rsquo;t constantly measure user activity to fix performance bottlenecks. If someone decides to run the program on a cheap laptop, their experience will be poor. Similarly, there&rsquo;s no way to tell how a user will be using the software. One may, for example, open huge files and attempt to process a lot of data. C++ is not, of course, a solution too all those problems. It does, however, offer great performance out of the box and tools to further improve it.</p>
+
+<h2>Features</h2>
+
+<p>The application has two ways of looking at data. First option is to use the UI to navigate to the table/view or other database objects to see them. For instance, to see data in a table, you can double click on a table name. Data is presented in a columnar view with column names and types in headers. You can easily work with many tables, as each one is open on a separate tab.</p>
+
+<p>This view is quite flexible and makes it easy to update and search for specific values.</p>
+
+<p>Values can be updated by simply double clicking on a row, changing a value and committing the transaction. Adding and deleting rows is also possible from UI.</p>
+
+<p><img src="./data/projects/sanchosql_table_view_2.png" alt="SanchoSQL editing values in UI" title="SanchoSQL - editing values in UI" /></p>
+
+<p>At the top, there are two extra fields that can be used to list just the columns you need to see (useful in case of tables with a lot of columns). Text field below allows to apply extra SQL filtering to the results (think <code>WHERE</code> conditions).</p>
+
+<p>User can view information about a table, including details such as columns and their types, as well as constraints and indices.</p>
+
+<p><img src="./data/projects/sanchosql_table_schema.png" alt="SanchoSQL Postgres table schema" title="SanchoSQL Postgres table schema" /></p>
+
+<p>Apart from tables, users can see views, triggers, functions, and sequences.</p>
+
+<p>Alternative way of browsing the database, useful especially for advanced users, is the &ldquo;editor&rdquo; view, where a user can type SQL commands directly and see the results. The editor supports some of the standard features you would expect, such as syntax highlighting. Apart from just executing SQL code, users can also see query plans to compare performance of their code.</p>
+
+<h2>Setup</h2>
+
+<p>At the moment, the desktop application is split into several libraries that are later statically built into a single binary file. The whole process is defined in CMake. The goal of this separation was to allow working on parts of the codebase that don&rsquo;t need to depend on each other. For instance, UI and database implementations are separated. I would like the split to be cleaner, as currently there are quite a few dependencies, e.g. database abstraction is coupled with the Postgres database communication.</p>
+
+<p>In an application like this, it&rsquo;s useful to have a clear distinction between the implementation and the user interface, so that it&rsquo;s possible to build different UIs that can easily implement the same functionality. At the current stage of this project, it would require some extra work to more clearly split the interface from the implementation.</p>
+
+<h2>Summary</h2>
+
+<p>Building desktop applications for Linux systems is still not as easy as for proprietary systems. One has to battle quite a few differences between different distributions (for instance, when packaging the application and managing the dependencies). There are inconsistencies in the UI, depending on desktop environments, that aren&rsquo;t always easy to fix. Also, help available online for GTK is quite limited and often not up-to-date, which obviously doesn&rsquo;t make it easier.</p>
+
+<p>At the current stage, SanchoSQL offers a simple and minimalistic Postgres client. It&rsquo;s also ready for further improvements in terms of user interface and features.</p>
+
+    </div>
+  </body>
+</html>
