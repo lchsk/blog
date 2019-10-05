@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+  <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-119994839-1');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="Set up a Docker container running a web service that connects to a Postgres database running on the host system.">
+    <meta name="keywords" content="docker, postgres, postgresql, containers, postgres configuration, add-host docker, postgresql.conf, docker networking">
+    <meta name="author" content="Maciej Lechowski">
+    <title>How to connect to a host Postgres database from a Docker container?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link rel="alternate" type="application/rss+xml" href="posts.xml" />
+  </head>
+  <body>
+    <div class="article">
+    <div id="header"><a href="index.html">Home</a></div>
+    <h1>How to connect to a host Postgres database from a Docker container?</h1>
+    Published 2019-10-05
+    <div id="text" style="max-width: 760px;">
+      <p>Let&rsquo;s assume we have a web service running inside a Docker container. We also have a Postgres database running on a host system (i.e., outside of Docker as you probably don&rsquo;t want to run a database in Docker in production). Assuming you don&rsquo;t want the container to share the network with the host (using <code>--network host</code> parameter when running it), the database and the container need to be configured in order to communicate.</p>
+
+<h2>Postgres configuration changes</h2>
+
+<p>The database needs configuration changes to allow connections from Docker containers. First, find Postgres configuration files. They&rsquo;re usually available in <code>/etc/postgresql/&lt;postgres version&gt;/main</code>.</p>
+
+<h4>File <code>postgresql.conf</code></h4>
+
+<p>Change the following line:</p>
+
+<pre><code>listen_addresses = 'localhost'
+</code></pre>
+
+<p>to</p>
+
+<pre><code>listen_addresses = '*'
+</code></pre>
+
+<p>This will allow Postgres to listen to all addresses, not just to localhost.</p>
+
+<h4>File <code>pg_hba.conf</code></h4>
+
+<p>In this file, add the following line</p>
+
+<pre><code>host	all	all	172.17.0.1/16	md5
+</code></pre>
+
+<p>This line will allow connections to Postgres from <code>172.17.0.1/16</code> range of addresses. They belong to Docker and when running a container Docker will assign an IP to a container from this range.</p>
+
+<h2>Docker</h2>
+
+<p>When running your Docker container you need to configure it use the host system.</p>
+
+<h4>Tell the container about the host&rsquo;s IP address</h4>
+
+<p>Pass the host&rsquo;s IP using <code>--add-host</code> option, e.g., <code>--add-host=host:&lt;ip&gt;</code>. In this case <code>host</code> is a name of the host and it will be added to container&rsquo;s <code>/etc/hosts</code> file. Inside the Docker container, you will be able to use the name <code>host</code> to connect to the host system.</p>
+
+<h4>Remember to publish container&rsquo;s ports</h4>
+
+<p>For instance, if your dockerised app is running a server on port 8000,
+you can pass <code>-p 8000:8000</code> to the <code>docker run</code> command to make your app available on the host on port <code>8000</code>. The full <code>docker run</code> command can look similar to this:</p>
+
+<pre><code>docker run -dt --rm --add-host=host:&lt;ip&gt; --name container_name -p 8000:8000 image_name
+</code></pre>
+
+<p>Those changes should be enough to make a Postgres database running on a host system work with a containerised app.</p>
+
+    </div>
+  </div>
+  </body>
+</html>
