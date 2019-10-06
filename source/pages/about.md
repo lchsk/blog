@@ -8,8 +8,6 @@ slug: about
 
 <h3>Maciej Lechowski</h3>
 
-<small>(Pronunciation: Match-ey, or [ˈmat͡ɕɛj])</small>
-
 Software engineer. Based in London.
 
 <h3>Contact</h3>
