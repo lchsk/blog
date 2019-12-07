@@ -17,6 +17,7 @@ Software engineer. Based in London.
 <h3>External links</h3>
 
 - <a href="https://github.com/lchsk" title="lchsk github profile">github</a>
+- <a href="https://www.linkedin.com/in/maciej-lechowski/" title="lchsk linkedin profile">linkedin</a>
 - <a href="https://twitter.com/lchsk" title="lchsk twitter profile">twitter</a>
 
 

@@ -11,7 +11,7 @@ keywords: lchsk, projects, github, sanchosql, xstarter
 
 **Postgres desktop client**
 
-Links: <a href="https://sanchosql.com" title="SanchoSQL website">website</a> | <a href="https://github.com/lchsk/sanchosql" title="SanchoSQL source code">source code</a>
+Links: <a href="https://lchsk.com/sanchosql" title="SanchoSQL website">website</a> | <a href="https://github.com/lchsk/sanchosql" title="SanchoSQL source code">source code</a>
 
 SanchoSQL is a desktop client application for PostgreSQL database. It allows viewing and manipulating database objects.
 

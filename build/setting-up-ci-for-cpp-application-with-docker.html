@@ -33,7 +33,7 @@
 
 <h2>C++ application built with Docker on CI</h2>
 
-<p>I&rsquo;m working on a <a href="https://sanchosql.com">C++ desktop client for Postgres</a>. I want to build and run the tests automatically after pushing my changes. Some of the dependencies, however, are heavy (e.g. GTK+ and its C++ bindings) and TravisCI offers Ubuntu 14.04 where only older versions are available. Fortunately, it can be built in a Docker container where operating system can be picked and libraries can be installed.</p>
+<p>I&rsquo;m working on a <a href="https://lchsk.com/sanchosql">C++ desktop client for Postgres</a>. I want to build and run the tests automatically after pushing my changes. Some of the dependencies, however, are heavy (e.g. GTK+ and its C++ bindings) and TravisCI offers Ubuntu 14.04 where only older versions are available. Fortunately, it can be built in a Docker container where operating system can be picked and libraries can be installed.</p>
 
 <p><code>.travis.yml</code> config file becomes very simple in this case as it only builds the image:</p>
 
@@ -125,7 +125,7 @@ docker build -t sancho_ubuntu1804 -f Dockerfile.ubuntu1804 ./
 <p>This solution is easily adaptable to various use cases and can be extended to more complex applications.</p>
 
 <ul>
-<li><a href="https://sanchosql.com">Learn more about SanchoSQL, a desktop client application for PostgreSQL</a></li>
+<li><a href="https://lchsk.com/sanchosql">Learn more about SanchoSQL, a desktop client application for PostgreSQL</a></li>
 <li><a href="https://github.com/lchsk/sanchosql">Source code</a></li>
 </ul>
 

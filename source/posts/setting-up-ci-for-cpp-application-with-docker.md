@@ -14,7 +14,7 @@ There are a few reasons why it's worth to use Docker in a continuous integration
 
 ## C++ application built with Docker on CI
 
-I'm working on a [C++ desktop client for Postgres](https://sanchosql.com). I want to build and run the tests automatically after pushing my changes. Some of the dependencies, however, are heavy (e.g. GTK+ and its C++ bindings) and TravisCI offers Ubuntu 14.04 where only older versions are available. Fortunately, it can be built in a Docker container where operating system can be picked and libraries can be installed.
+I'm working on a [C++ desktop client for Postgres](https://lchsk.com/sanchosql). I want to build and run the tests automatically after pushing my changes. Some of the dependencies, however, are heavy (e.g. GTK+ and its C++ bindings) and TravisCI offers Ubuntu 14.04 where only older versions are available. Fortunately, it can be built in a Docker container where operating system can be picked and libraries can be installed.
 
 `.travis.yml` config file becomes very simple in this case as it only builds the image:
 
@@ -115,5 +115,5 @@ cd /sanchosql
 
 This solution is easily adaptable to various use cases and can be extended to more complex applications.
 
-- [Learn more about SanchoSQL, a desktop client application for PostgreSQL](https://sanchosql.com)
+- [Learn more about SanchoSQL, a desktop client application for PostgreSQL](https://lchsk.com/sanchosql)
 - [Source code](https://github.com/lchsk/sanchosql)

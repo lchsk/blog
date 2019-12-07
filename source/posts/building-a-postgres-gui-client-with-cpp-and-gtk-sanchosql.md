@@ -5,7 +5,7 @@ description: SanchoSQL - Postgres GUI client with C++ and GTK
 keywords: c++, sanchosql, sql, sancho, postgres, databases, gui, gtk, gtkmm, gtk+
 ---
 
-I've recently published version 0.1 of SanchoSQL, a GUI client for PostgreSQL. It's written in C++ and designed for Linux systems. It has a [website](https://sanchosql.com "SanchoSQL website") and is [open source](https://github.com/lchsk/sanchosql "SanchoSQL Postgres client for Linux").
+I've recently published version 0.1 of SanchoSQL, a GUI client for PostgreSQL. It's written in C++ and designed for Linux systems. It has a [website](https://lchsk.com/sanchosql "SanchoSQL website") and is [open source](https://github.com/lchsk/sanchosql "SanchoSQL Postgres client for Linux").
 
 ## Why
 
