@@ -33,10 +33,10 @@ It's also worth arguing that interaction between a human and a machine using a t
 
 Perhaps due to their specific nature, keyboard based programs encourage users to learn more about them and seek ways to improve how they work. That's why Emacs and Vim users are happy to devote their time building sizable configurations. And that's why those who use tiling window managers are always on the lookout for new applications matching their keyboard-heavy workflow.
 
-When I felt none of available application launchers suited me, I've built my own (xstarter, [website](https://xstarter.org), [source code](https://github.com/lchsk/xstarter)) that I could control from terminal and that I use every day.
+When I felt none of available application launchers suited me, I've built my own (xstarter, [website](https://lchsk.com/xstarter), [source code](https://github.com/lchsk/xstarter)) that I could control from terminal and that I use every day.
 
 ![xstarter screenshot](./data/xstarter.png)
 
-*[xstarter](https://xstarter.org) in action*
+*[xstarter](https://lchsk.com/xstarter) in action*
 
 No matter how many ways of interacting with a computer are out there, keyboards, various pointing devices, or voice, the simplest one can provide the most efficient and seamless experience.

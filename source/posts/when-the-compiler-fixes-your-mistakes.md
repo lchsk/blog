@@ -5,7 +5,7 @@ description: I have been working on a new feature for my terminal-based applicat
 keywords: compilers, c, terminal, application launcher, xstarter, emacs, bugs, debugging, warnings
 ---
 
-I have been working on a new feature for my [terminal-based application launcher](https://github.com/lchsk/xstarter). The feature itself is not important at this point although I'm happy to mention that I'm working on integrating the application launcher with Emacs. I want to be able to search for programs and run them from within Emacs using [xstarter](https://xstarter.org). So far, I've begun making changes to the application but I'm yet to build the Emacs interface. However, what I wanted to write about in this post, is the strange experience I have had fixing a bug.
+I have been working on a new feature for my [terminal-based application launcher](https://github.com/lchsk/xstarter). The feature itself is not important at this point although I'm happy to mention that I'm working on integrating the application launcher with Emacs. I want to be able to search for programs and run them from within Emacs using [xstarter](https://lchsk.com/xstarter). So far, I've begun making changes to the application but I'm yet to build the Emacs interface. However, what I wanted to write about in this post, is the strange experience I have had fixing a bug.
 
 ## Good intentions
 

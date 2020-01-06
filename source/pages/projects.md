@@ -25,7 +25,7 @@ SanchoSQL is a desktop client application for PostgreSQL database. It allows vie
 
 **Application launcher for Linux**
 
-Links: <a href="https://xstarter.org" title="xstarter website">website</a> | <a href="https://github.com/lchsk/xstarter" title="xstarter source code">source code</a>
+Links: <a href="https://lchsk.com/xstarter" title="xstarter website">website</a> | <a href="https://github.com/lchsk/xstarter" title="xstarter source code">source code</a>
 
 It lives in terminal and works well with tiling window managers (e.g. xmonad, i3 etc).
 
@@ -123,7 +123,7 @@ Links: <a href="https://github.com/lchsk/derid" title="derid dired c++ terminal 
 
 <h2>helm-xstarter</h2>
 
-This Emacs package offers a Helm interface for [xstarter](https://xstarter.org). It loads a list of installed applications and lets a user select one to launch.
+This Emacs package offers a Helm interface for [xstarter](https://lchsk.com/xstarter). It loads a list of installed applications and lets a user select one to launch.
 
 Links: <a href="https://github.com/lchsk/helm-xstarter" title="xstarter helm">source code</a>
 
