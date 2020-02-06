@@ -4,12 +4,18 @@
     <link>https://lchsk.com</link>
     <description>Home page of Maciej Lechowski; blog, open source projects; c++, python, go, emacs, linux</description>
     <managingEditor> (Maciej Lechowski)</managingEditor>
-    <pubDate>Wed, 05 Feb 2020 03:34:02 +0000</pubDate>
+    <pubDate>Thu, 06 Feb 2020 11:11:14 +0000</pubDate>
+    <item>
+      <title>Stay paranoid and trust no one. Overview of common security vulnerabilities in web applications</title>
+      <link>https://lchsk.com/stay-paranoid-and-trust-no-one-overview-of-common-security-vulnerabilities-in-web-applications.html</link>
+      <description>Stay paranoid and trust no one. Common security issues in web applications explained with Python and Django. Examples of SQL injection and command injection. Cross-site scripting, and other common vulnerabilities.</description>
+      <pubDate>Thu, 06 Feb 2020 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Static websites in Golang and Rust</title>
       <link>https://lchsk.com/static-websites-in-golang-and-rust.html</link>
       <description>How to generate static page websites in go? </description>
-      <pubDate>Mon, 03 Feb 2020 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 02 Feb 2020 00:00:00 +0000</pubDate>
     </item>
     <item>
       <title>How to connect to a host Postgres database from a Docker container?</title>

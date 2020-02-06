@@ -1,6 +1,6 @@
 ---
 title: Static websites in Golang and Rust
-created: 2020-02-03T00:00:00Z
+created: 2020-02-02T00:00:00Z
 description: How to generate static page websites in go? 
 keywords: blog, rust, go, golang, sql, website, html, templates, rss, static page generator, static pages
 ---
