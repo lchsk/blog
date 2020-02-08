@@ -39,6 +39,12 @@ div#header {
 	font-size: 12pt;
 }
 
+div#footer {
+	border-top: 1px solid #eee;
+	margin-top: 10px;
+	padding-top: 10px;
+}
+
 ul#post-list {
 	list-style-type: none;
 	padding-left: 0;
