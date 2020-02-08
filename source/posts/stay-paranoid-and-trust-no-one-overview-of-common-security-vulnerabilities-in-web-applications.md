@@ -5,6 +5,8 @@ description: Stay paranoid and trust no one. Common security issues in web appli
 keywords: web security, vulnerabilities, injection, sql injection, cross site scripting, django, python, javascript, tokens, pickle, user data, owasp, xss
 ---
 
+- <a href="https://news.ycombinator.com/item?id=22255758">On HackerNews</a>
+
 There's a lot of different security issues that affect web applications. However, there's a number of very common problems that occur all the time. They're quite well-known and the ways in which they can be mitigated are also well researched. This article summarises the most common issues according to Open Web Application Security Project (OWASP). Additionally, I've created a small web application in Django that showcases how some of the common security issues could be exploited.
 
 This is based on some of the OWASP's resources such as [1] and [2]. The example Django application is available on [my github](https://github.com/lchsk/django-insecure) [3].
