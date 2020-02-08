@@ -5,6 +5,18 @@ description: Projects - personal projects
 keywords: lchsk, projects, github, sanchosql, xstarter
 ---
 
+<h2>xstarter</h2>
+
+**Application launcher for Linux**
+
+Links: <a href="https://lchsk.com/xstarter" title="xstarter website">website</a> | <a href="https://github.com/lchsk/xstarter" title="xstarter source code">source code</a>
+
+It lives in terminal and works well with tiling window managers (e.g. xmonad, i3 etc).
+
+<code>C, ncurses</code>
+
+![xstarter terminal launcher](./data/projects/xstarter.png "xstarter application launcher for linux")
+
 <hr/>
 
 <h2>SanchoSQL</h2>
@@ -18,20 +30,6 @@ SanchoSQL is a desktop client application for PostgreSQL database. It allows vie
 <code>C++, GTK+ (gtkmm)</code>
 
 <a title="Postgres client for linux" href="./data/projects/sanchosql.png"><img height="400" src="./data/projects/sanchosql.png" title="SanchoSQL postgres client" alt="SanchoSQL postgres client for linux"/></a>
-
-<hr/>
-
-<h2>xstarter</h2>
-
-**Application launcher for Linux**
-
-Links: <a href="https://lchsk.com/xstarter" title="xstarter website">website</a> | <a href="https://github.com/lchsk/xstarter" title="xstarter source code">source code</a>
-
-It lives in terminal and works well with tiling window managers (e.g. xmonad, i3 etc).
-
-<code>C, ncurses</code>
-
-![xstarter terminal launcher](./data/projects/xstarter.png "xstarter application launcher for linux")
 
 <hr/>
 
