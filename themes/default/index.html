@@ -20,12 +20,12 @@
     <link rel="alternate" type="application/rss+xml" href="posts.xml" />
   </head>
   <body>
-    <div class="article">
+    <div id="text" class="article">
       <p>
         {{title}}
       </p>
 
-      <h2>Posts <a title="rss" href="posts.xml">rss</a></h2>
+      <h2><a href="posts.html">Posts</a> <a title="rss" href="posts.xml">rss</a></h2>
       <ul id="post-list">
         {{posts-begin}}
         <li>{{post_link}}</li>
@@ -52,6 +52,7 @@
       <ul id="post-list">
         <li><a href="https://github.com/lchsk" title="lchsk github profile">github</a></li>
         <li><a href="https://twitter.com/lchsk" title="lchsk twitter profile">twitter</a></li>
+        <li><a href="https://www.linkedin.com/in/maciej-lechowski" title="lchsk linkedin profile">linkedin</a></li>
       </ul>
 	  <h2>{{@about}}</h2>
 	  {{#include footer_menu.html}}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+  <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-119994839-1');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="{{description}}">
+    <meta name="keywords" content="{{keywords}}">
+    <meta name="author" content="Maciej Lechowski">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link rel="alternate" type="application/rss+xml" href="posts.xml" />
+  </head>
+  <body>
+    <div class="article">
+	  {{#include top_menu.html}}
+      <div id="text" style="max-width: 760px;">
+      <h1>{{title}} <a title="rss" href="posts.xml">rss</a></h1>
+      <ul id="post-list">
+        {{posts-begin}}
+        <li>{{post_link}}</li>
+	    <span class="date">{{post_date}}</span>
+        {{posts-end}}
+      </ul>
+    </div>
+    {{#include footer_menu.html}}
+  </div>
+  </body>
+</html>

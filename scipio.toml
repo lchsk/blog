@@ -1,10 +1,17 @@
 # Base URL of the website
 url = "https://lchsk.com"
 
-[rss]
 # Settings for the RSS feed
+[rss]
 generate_rss = true
 title = "Home page of Maciej Lechowski"
 description = "Home page of Maciej Lechowski; blog, open source projects; c++, python, go, emacs, linux"
 author_name = "Maciej Lechowski"
 author_email = ""
+
+# Settings for the posts.html listing all the posts
+[posts]
+slug = "posts"
+title = "Posts"
+Description = "Posts and articles. Open source projects; c++, python, go, emacs, linux"
+Keywords = ["open source", "c++", "python", "go", "rust", "emacs", "linux"]
