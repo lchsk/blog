@@ -57,11 +57,18 @@ Links:
 
 <h2>Scipio</h2>
 
-a simple static website generator written in Rust.
+A static website generator, powering this website.
 
-<code>Rust</code>
+Originally written in Rust, then rewritten in Golang.
 
-Links: <a href="https://github.com/lchsk/scipio" title="scipio static website generator">source code</a>
+Blog article: {{@static-websites-in-golang-and-rust}}
+
+<code>Rust, Go</code>
+
+Links:
+
+- <a href="https://github.com/lchsk/scipio" title="scipio static website generator">source code (Go)</a>
+- <a href="https://github.com/lchsk/scipio-rust" title="scipio static website generator">source code (Rust)</a>
 
 <hr/>
 
