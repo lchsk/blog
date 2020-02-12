@@ -365,6 +365,7 @@ It also does warn about use of `pickle` module and how unsafe it can be.
 
 This article presented a number of common security concerns that can occur in web applications. Due to how widespread and serious can they be, it's necessary to be aware of risks and how to mitigate them.
 
+## Footnotes
 
 
 [1] https://www.owasp.org/images/7/72/OWASP_Top_10-2017_%28en%29.pdf.pdf
@@ -376,3 +377,4 @@ This article presented a number of common security concerns that can occur in we
 [4] https://www.ncsc.gov.uk/files/password_policy_infographic.pdf
 
 [5] https://github.com/PyCQA/bandit
+

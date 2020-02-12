@@ -29,8 +29,8 @@
 </div>
 
     <h1>How to connect to a host Postgres database from a Docker container?</h1>
-    Published 2019-10-05
     <div id="text" style="max-width: 760px;">
+      Published 2019-10-05
       <p>Let&rsquo;s assume we have a web service running inside a Docker container. We also have a Postgres database running on a host system (i.e., outside of Docker as you probably don&rsquo;t want to run a database in Docker in production). Assuming you don&rsquo;t want the container to share the network with the host (using <code>--network host</code> parameter when running it), the database and the container need to be configured in order to communicate.</p>
 
 <h2>Postgres configuration changes</h2>
