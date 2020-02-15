@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+  <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-119994839-1');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="Install a C++ header-only library with git submodules and CMake.">
+    <meta name="keywords" content="git, git submodules, C++, c++, c, cpp, libraries, CMake, c++ libraries, header-only libraries">
+    <meta name="author" content="Maciej Lechowski">
+    <title>How to use git submodules and CMake to install C++ libraries?</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link rel="alternate" type="application/rss+xml" href="posts.xml" />
+  </head>
+  <body>
+    <div class="article">
+	  <div id="header">
+  <a href="index.html">Home</a> |
+  <a href="posts.html">Posts</a> |
+  <a href="projects.html">Projects</a> |
+  <a href="about.html">About</a>
+</div>
+
+    <h1>How to use git submodules and CMake to install C++ libraries?</h1>
+    <div id="text" style="max-width: 760px;">
+      Published 2020-02-16
+      <p>Installing C and C++ libraries is not easy as there isn&rsquo;t a widely accepted package management solution similar to what exists in languages such as Python, JavaScript etc.</p>
+
+<p>With git submodules you can embed another repository inside your own. In that way, you can track your dependencies and update them similarly to like you would an ordinary git repository.</p>
+
+<p>This example shows how to install a <a href="https://github.com/ToruNiina/toml11">C++ TOML parser</a> as a dependency using git submodules and CMake.</p>
+
+<p>First, create a directory for libraries inside the root of your project:</p>
+
+<pre><code>mkdir lib
+</code></pre>
+
+<p>Then, add the submodule inside the <code>lib</code> directory:</p>
+
+<pre><code>git submodule add https://github.com/ToruNiina/toml11 lib/toml11
+</code></pre>
+
+<p>At that point, git should clone that repository and put it in <code>lib/toml11</code>.</p>
+
+<p>Now, we need to tell CMake where to find the library files.</p>
+
+<p>Inside the <code>CMakeLists.txt</code> file define a variable, <code>EXTERNAL_LIB_HEADERS</code>, that lists external dependencies.</p>
+
+<pre><code>set(EXTERNAL_LIB_HEADERS lib/toml11)
+</code></pre>
+
+<p>Now, add <code>EXTERNAL_LIB_HEADERS</code> to the list of directories where C++ compiler should be looking for header files.</p>
+
+<pre><code>target_include_directories(
+  executable_name PRIVATE
+  ${EXTERNAL_LIB_HEADERS}
+)
+</code></pre>
+
+<p>At that point, it should be ready to use. You can test it by including the header of the library and compiling your program.</p>
+
+<pre><code>#include &lt;toml.hpp&gt;
+</code></pre>
+
+<p>As a side note I should add that having a lot of quickly evolving dependencies defined in such a way might be difficult to control. However, for relatively simple use cases, this is a straightforward and quick solution.</p>
+
+    </div>
+    <div id="footer">
+  <a href="https://lchsk.com">2020 lchsk.com</a> |
+  <a href="index.html">Home</a> |
+  <a href="posts.html">Posts</a> |
+  <a href="projects.html">Projects</a> |
+  <a href="about.html">About</a>
+</div>
+
+  </div>
+  </body>
+</html>

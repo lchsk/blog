@@ -4,7 +4,13 @@
     <link>https://lchsk.com</link>
     <description>Home page of Maciej Lechowski; blog, open source projects; c++, python, go, emacs, linux</description>
     <managingEditor> (Maciej Lechowski)</managingEditor>
-    <pubDate>Wed, 12 Feb 2020 22:12:31 +0000</pubDate>
+    <pubDate>Sat, 15 Feb 2020 19:18:39 +0000</pubDate>
+    <item>
+      <title>How to use git submodules and CMake to install C++ libraries?</title>
+      <link>https://lchsk.com/how-to-use-git-submodules-and-cmake-to-install-c-libraries.html</link>
+      <description>Install a C++ header-only library with git submodules and CMake.</description>
+      <pubDate>Sun, 16 Feb 2020 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Stay paranoid and trust no one. Overview of common security vulnerabilities in web applications</title>
       <link>https://lchsk.com/stay-paranoid-and-trust-no-one-overview-of-common-security-vulnerabilities-in-web-applications.html</link>
