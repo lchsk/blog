@@ -4,7 +4,7 @@
     <link>https://lchsk.com</link>
     <description>Home page of Maciej Lechowski; blog, open source projects; c++, python, go, emacs, linux</description>
     <managingEditor> (Maciej Lechowski)</managingEditor>
-    <pubDate>Sat, 15 Feb 2020 19:18:39 +0000</pubDate>
+    <pubDate>Thu, 20 Feb 2020 19:01:41 +0000</pubDate>
     <item>
       <title>How to use git submodules and CMake to install C++ libraries?</title>
       <link>https://lchsk.com/how-to-use-git-submodules-and-cmake-to-install-c-libraries.html</link>
