@@ -1292,7 +1292,13 @@
           if (text) Module.printErr('[post-exception status] ' + text);
         };
       };
-    </script>
+                                                      </script>
+document.addEventListener("click", function(){
+try {
+if (!SDL2 || !SDL2.audioContext || !SDL2.audioContext.resume) return;
+SDL2.audioContext.resume();
+} catch (err) {}
+});
     <script async type="text/javascript" src="alive.js"></script>
   </body>
 </html>
