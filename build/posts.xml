@@ -4,7 +4,13 @@
     <link>https://lchsk.com</link>
     <description>Home page of Maciej Lechowski; blog, open source projects; c++, python, go, emacs, linux</description>
     <managingEditor> (Maciej Lechowski)</managingEditor>
-    <pubDate>Thu, 20 Feb 2020 19:01:41 +0000</pubDate>
+    <pubDate>Mon, 27 Apr 2020 22:35:07 +0100</pubDate>
+    <item>
+      <title>Building a video game in C for a weekend game jam</title>
+      <link>https://lchsk.com/building-a-video-game-in-c-for-a-weekend-game-jam.html</link>
+      <description>Summary of building a video game entry for Ludum Dare 46 game jam. Top-down survival shooter in C and SDL.</description>
+      <pubDate>Mon, 27 Apr 2020 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>How to use git submodules and CMake to install C++ libraries?</title>
       <link>https://lchsk.com/how-to-use-git-submodules-and-cmake-to-install-c-libraries.html</link>
