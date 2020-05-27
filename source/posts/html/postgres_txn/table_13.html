@@ -1,0 +1,65 @@
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin transaction isolation level repeatable read;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select count(id) from b;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Count is 1</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">insert into b values (2, 2);</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">commit;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">select count(id) from b;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Count is still 1</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>

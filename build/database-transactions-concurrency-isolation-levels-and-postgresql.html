@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+  <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-119994839-1');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="Behavior of concurrent access to resources such as databases can be a complex topic. This article describes how concurrent access can be managed using SQL transactions, including transaction isolation levels, and how certain patterns of access can affect performance.">
+    <meta name="keywords" content="postgres, postgresql, isolation levels, transaction isolation levels, concurrency, concurrent transactions, database performance, read committed, repeatable read, serializable transactions, read uncommitted transactions, acid transactions, atomic transactions, postgres transactions, sql transactions, isolation levels">
+    <meta name="author" content="Maciej Lechowski">
+    <title>Database transactions, concurrency, isolation levels, and PostgreSQL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link rel="alternate" type="application/rss+xml" href="posts.xml" />
+  </head>
+  <body>
+    <div class="article">
+	  <div id="header">
+  <a href="index.html">Home</a> |
+  <a href="posts.html">Posts</a> |
+  <a href="projects.html">Projects</a> |
+  <a href="about.html">About</a>
+</div>
+
+    <h1>Database transactions, concurrency, isolation levels, and PostgreSQL</h1>
+    <div id="text" style="max-width: 760px;">
+      Published 2020-05-27
+      <p>Services providing users with data must ensure the information they show is in a valid state. With many users accessing and modifying data at the same time, ensuring the correctness of data is no easy task. One of the main reasons we use databases is to take advantage all the hard work that had already gone into ensuring data consistency in those systems. However, even though a lot of difficult problems had already been solved for the users of databases, it&rsquo;s still important to know when to use different database features and how they can impact performance of the entire database system. Concurrent updates, <code>select for update</code> queries, transaction isolation levels all impact the behavior and performance of the database.</p>
+
+<h2>Transactions</h2>
+
+<p>Transactions are a mechanism to move the data from one consistent, valid state into another. This includes the ability to handle potential failures and many concurrent users at the same time who can try accessing or modifying the same data. In either case, a database can never allow itself to end up in an invalid state, e.g. by saving the results of only a part of a transaction, or allowing values to be invalid due to many users modifying them at the same time. In case of PostgreSQL, almost every interaction with it, is a part of a transaction, including simple single line <code>select</code> queries. However, a good implementation of transactions really shines in case of concurrent use of the database by many users. A database might be asked to handle thousands of transactions while preserving the data in a valid state.</p>
+
+<p>Transactions are usually described to have &ldquo;ACID&rdquo; properties, i.e. are:</p>
+
+<ul>
+<li><p>atomic (a transaction is treated wholly; if a single query within a transaction fails, then the entire transaction fails),</p></li>
+
+<li><p>consistent (all existing constraints of the data model are respected),</p></li>
+
+<li><p>isolated (from other transactions),</p></li>
+
+<li><p>durable (results are saved to disk).</p></li>
+</ul>
+
+<p>The concept of isolation is especially interesting, and will be explained in more detail later. The way concurrent transactions are interacting with each other can be modified.</p>
+
+<p>The examples presented in the article were tested with PostgreSQL 12.3 using the <code>psql</code> utility.</p>
+
+<h2>Locking</h2>
+
+<p>Importantly, transactions and certain operations performed within them, can block each other due to locking mechanisms necessary to keep the data safe. This can have massive performance implications.. It&rsquo;s worth noting when a lock occurs and its scope (e.g. the entire table, a subset of rows, or just a single row).</p>
+
+<p>In general, multiple users can read the current state of data without blocking each other. Consider two users interacting with the database in their own transactions:</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select value from b;</td>
+<td class="org-left">select value from b;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">Sees 100</td>
+<td class="org-left">Sees 100</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">commit;</td>
+<td class="org-left">commit;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>Reading is still possible even if another user is currently modifying the data.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">update b set value = 200 where id = 1;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">select value from b where id = 1;</td>
+<td class="org-left">select value from b where id = 1;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">Sees 200</td>
+<td class="org-left">Sees 100</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">commit;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">select value from b where id = 1;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">Sees 200</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">6</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">commit;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>In this scenario, User 1 sets the <code>value</code> to 200 in their own transaction (line 2). User 2 can still read the same row (<code>id = 1</code>) even though User 1 hasn&rsquo;t committed their transaction yet. However, the crucial distinction is what value does User 2 see at that point (line 3). It&rsquo;s 100, i.e. the &ldquo;old&rdquo; value (as the change to 200 hasn&rsquo;t been committed yet). This occurs due to the database maintaining each transaction isolated and disallowing &ldquo;dirty reads&rdquo;, i.e. reads that haven&rsquo;t been committed yet. Those are never allowed in PostgreSQL. At the same time (line 3), User 1 sees 200, i.e. &ldquo;their&rdquo; value from within their own transaction. User 2 will only see the new value after User 1 commits their transaction which happens in line 4.</p>
+
+<p>The isolation also works if multiple users are modifying the same data. Let&rsquo;s set value to 0 (<code>update b set value = 0 where id = 1</code>). Now, let&rsquo;s make both users try to increment <code>value</code>.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">update b set value = value + 1 where id = 1 returning value;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">value is now 1</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">select value from b where id = 1;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">Still sees value = 0</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">update b set value = value + 1 where id = 1 returning value;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">This cannot be executed until User 1 commits</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">commit;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">6</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">Sees 2</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">7</td>
+<td class="org-left">select value from b where id = 1;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">Sees 1 because User 2 hasn't committed yet;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">8</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">commit;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>In this example, both users are trying to increment the value of single row identified by <code>id = 1</code>. We expect the result of this to be 2. User 1 increments the value by 1 and sees the current value to be equal to 1. Meanwhile, User 2 still sees value = 0, and tries to increment it by 1 in their own transaction. However, that operation is not permitted to continue because User 1 still holds the lock on the row with <code>id = 1</code> and will hold that lock until the transaction is committed or rolled back. Thus, the database ensures the data does not get corrupted due to concurrent updates. After both users commit their transactions, they will both see <code>value = 2</code>, as one would expect.</p>
+
+<p>This behavior is impacted by the transaction isolation level which will be described later. It occurs at the &ldquo;read committed&rdquo; level (a default in PostgreSQL) but not at higher levels.</p>
+
+<p>The locking mechanism ensures the data won&rsquo;t get corrupted but it has performance implications. Keeping transactions open run for a long time can significantly affect performance. In the example above, we&rsquo;ve locked only one row due to the <code>where id = 1</code> condition. So if User 2 was instead modifying a row with <code>id = 2</code> both transactions would avoid blocking. However, an <code>update</code> could affect more rows (even the entire table), in which case a lock would be held on all selected rows.</p>
+
+<h2><code>Select for update</code></h2>
+
+<p>While <code>update</code> locks rows for the time needed to perform a change to the data, sometimes you may need to lock rows for a bit longer, perhaps to perform additional processing. To prevent race conditions in that case, <code>select for update</code> can be used. It locks selected rows and blocks queries that could affect selected data (such as other <code>select for update</code> or <code>update</code>).</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select * from b where id = 1 for update;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">select * from b where id = 1 for update;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#x2013; Waiting</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#x2013; Waiting</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">commit;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">6</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#x2013; Now User 2 has a lock on the row with id = 1</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">7</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">commit;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#x2013; All locks on row with id = 1 have been released</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>After User 1 acquires a lock on row with <code>id = 1</code> in line 2, only they have a right to modify it. In line 3 User 2 tries to lock the same row but they have to wait (operations in that transaction cannot proceed) until User 1 finishes their transaction (line 5). After that User 2 is given a lock on <code>id = 1</code>.</p>
+
+<p>All this locking and waiting can be expensive and result in lower performance.</p>
+
+<p>Sometimes waiting is not necessary and all we want to do is to acquire whatever available (unlocked) row we get can get. In that scenario, we won&rsquo;t be waiting but also are not guaranteed to get anything. If all rows are locked, we&rsquo;ll get an empty result set. This behavior can be achieved in Postgres with <code>skip locked</code> instruction.</p>
+
+<p>Let&rsquo;s say we have 100 rows in table C.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select * from c limit 50 for update skip locked;</td>
+<td class="org-left">select * from c limit 50 for update skip locked;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; User 1 gets 50 rows</td>
+<td class="org-left">&#x2013; User 2 gets 50 rows (different that User 1)</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>By using <code>for update skip locked</code> each user can get rows (different ones) without waiting for the other transaction to finish.</p>
+
+<p>However, consider a case when there&rsquo;s nothing left because other users are holding locks on all available data:</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select * from c limit 100 for update skip locked;</td>
+<td class="org-left">select * from c limit 1 for update skip locked;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; User 1 gets 100 rows</td>
+<td class="org-left">&#x2013; User 2 gets 0 rows</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>User 1 requests 100 rows and locks them. User 2 attempts to get 1 row with a lock, however User 1 already has a lock on all available data. Due to <code>skip locked</code>, the query won&rsquo;t wait and return an empty set (without <code>skip locked</code> the query would be waiting for User 1 to finish).</p>
+
+<h2><code>Select for update</code> and foreign keys</h2>
+
+<p>Using <code>select for update</code> is already expensive but it can get even more so. This is because not only the table we specify that will be locked but also tables related to it via foreign keys. This prevents breaking foreign key constraints but also adds to waiting times without being explicit about it, so worth being extra careful about using <code>select for update</code>.</p>
+
+<p>Consider two tables, <code>d</code> and <code>e</code>. Table <code>e</code> holds a foreign key <code>d_id</code> to table <code>d</code>.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select * from e for update;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">delete from d;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#x2013; Waiting</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">commit;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">&#x2013; Finally gets a chance to execute `delete`</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>Even though User 1 acquires a lock on table <code>e</code>, User 2 won&rsquo;t be able to run a delete query for table <code>d</code> until User 1 finishes their transaction. This is because <code>e</code> has a foreign key to <code>d</code>, so deleting related rows from table <code>d</code> would break foreign key constraints in <code>e</code>. In a more complex data model this can be difficult to see and a <code>select for update</code> query could be more costly that it would seem.</p>
+
+<h2>Transaction isolation levels</h2>
+
+<p>I&rsquo;ve mentioned isolation in the context of ACID principles. In general, isolation describes the idea of concurrently running transactions that don&rsquo;t interfere with each other. However, the exact behavior of isolation is configurable. SQL describes four isolation levels (from the least to the most strict):</p>
+
+<ul>
+<li><p>read uncommitted,</p></li>
+
+<li><p>read committed,</p></li>
+
+<li><p>repeatable read,</p></li>
+
+<li><p>serializable.</p></li>
+</ul>
+
+<p>Each level is defined in terms of phenomena it prohibits. &ldquo;Read uncommitted&rdquo; is the least strict, and is not even implemented by PostgreSQL. It allows &ldquo;dirty reads&rdquo;, which means that transaction 1 could read values set by transaction 2 even before the latter has committed them. The data read by transaction 1 could be invalid, as transaction 2 could be rolled back, therefore reverting any changes.</p>
+
+<p>This behavior is prohibited by the &ldquo;read committed&rdquo; isolation level, which as the name suggests, will only ever read data that has been committed. It is the default level in PostgreSQL. Even though &ldquo;read committed&rdquo; adds extra level of safety, there&rsquo;s still a number of potentially unwanted, or unexpected anomalies. Let&rsquo;s look at &ldquo;repeatable read&rdquo; and &ldquo;serializable&rdquo; levels which add extra protection.</p>
+
+<h3>&ldquo;Repeatable read&rdquo; isolation level</h3>
+
+<p>Similarly to the &ldquo;read committed&rdquo; level, it protects against &ldquo;dirty reads&rdquo;. It also protects against additional phenomena that can occur in the concurrent use of a database, namely &ldquo;lost updates&rdquo;, and &ldquo;non-repeatable reads&rdquo;. In Postgres it also protects against &ldquo;phantom reads&rdquo; even though the SQL standard doesn&rsquo;t require it. Let&rsquo;s see examples of those anomalies.</p>
+
+<h3>&ldquo;Non-repeatable reads&rdquo;</h3>
+
+<p>They can occur when values are read multiple times within the same transaction, and the obtained values are different due to another transaction modifying them (and committing the changes). So e.g. if the same query is executed twice within a transaction, it could return different values each time.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select value from b where id = 1;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Sees 100</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">update b set value = 1 where id = 1;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">commit;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">select value from b where id = 1;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Sees 1</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>In this case (we&rsquo;re using the default &ldquo;read committed&rdquo; isolation level), user 1 queries the table and sees <code>value = 100</code> (line 2). Meanwhile, user 2 runs an <code>update</code> (line 3) in a transaction which changes the <code>value</code> to 1 and promptly commits that transaction (line 4). When user 1 tries to read the <code>value</code> again (line 5), it&rsquo;s now equal to 1. This behavior means that values read in a transaction are not stable and can be affected by other, concurrent transactions modifying them.</p>
+
+<p>If we used &ldquo;read committed&rdquo; isolation level, this phenomenon won&rsquo;t occur, and user 1 will see <code>value = 100</code> in both reads. In the following example, we&rsquo;re explicitly defining the isolation level for User 1&rsquo;s transaction to be &ldquo;repeatable read&rdquo;.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin transaction isolation level repeatable read;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select value from b where id = 1;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Sees 100</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">update b set value = 1 where id = 1;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">commit;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">select value from b where id = 1;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Sees 100</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>Now, after the same sequence of operations, user 1 will see <code>value = 100</code> twice even though it has been modified in the meantime by user 2. In general, with &ldquo;repeatable read&rdquo; isolation level, data that has been read is guaranteed to stay constant throughout the transaction, regardless of concurrent updates (unless, of course, it&rsquo;s modified <em>within</em> the transaction).</p>
+
+<h3>&ldquo;Lost updates&rdquo;</h3>
+
+<p>Another anomaly prohibited by the &ldquo;repeatable read&rdquo; isolation level but permitted by &ldquo;read committed&rdquo; are the so called &ldquo;lost updates&rdquo;. In case of multiple transactions updating the same piece of data, a &ldquo;read committed&rdquo; transaction will accept them every time whereas a &ldquo;repeatable read&rdquo; transaction will reject changes if the same piece of data has already been modified by another transaction.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">update b set value = 100 where id = 1;</td>
+<td class="org-left">update b set value = 99 where id = 1;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">commit;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">commit;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>In this example we have two users having differing opinions on what the <code>value</code> of the row with <code>id = 1</code> should be. They&rsquo;re setting it to different values in their respective transactions. In the end, each <code>update</code> will be recorded but because user 2 commits their value shortly after user 1, their <code>value = 99</code> will remain and user 1&rsquo;s value of 100 has been &ldquo;lost&rdquo;.</p>
+
+<p>Now let&rsquo;s try the same with the &ldquo;repeatable read&rdquo; transaction.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin transaction isolation level repeatable read;</td>
+<td class="org-left">begin transaction isolation level repeatable read;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">update b set value = 100 where id = 1;</td>
+<td class="org-left">update b set value = 99 where id = 1;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">commit;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>In this case, after user 1 sends a <code>commit</code> the value of 100 will be recorded and user 2&rsquo;s transaction won&rsquo;t be allowed to continue (it will return an error and only a rollback will be permitted). So with &ldquo;repeatable read&rdquo; transactions, concurrent modifications of the same data are not permitted.</p>
+
+<h3>&ldquo;Phantom reads&rdquo;</h3>
+
+<p>They&rsquo;re similar to non-repeatable reads but the SQL standard allows them at the &ldquo;repeatable read&rdquo; isolation level. Interestingly, PostgreSQL doesn&rsquo;t, and at the &ldquo;repeatable read&rdquo; level Postgres already protects against them.</p>
+
+<p>&ldquo;Phantom read&rdquo; can occur when data is read multiple times in a transaction while another transaction is adding or removing rows in the same table.</p>
+
+<p>Let&rsquo;s first see how phantom reads could occur at the &ldquo;read committed&rdquo; level.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select count(id) from b;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Count is 1</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">insert into b values (2, 2);</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">commit;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">select count(id) from b;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Count is now 2</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>User 1 first counts rows in the table <code>b</code> (line 2, there&rsquo;s just 1 row). Meanwhile, user 2 has inserted (and committed) a new row into the table <code>b</code> (lines 3 and 4). After user 1 reads the count again (line 5) it will have changed and be equal to 2 due to user 2&rsquo;s recent insertion.</p>
+
+<p>With a &ldquo;repeatable read&rdquo; transaction this won&rsquo;t occur.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin transaction isolation level repeatable read;</td>
+<td class="org-left">begin;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select count(id) from b;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Count is 1</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">insert into b values (2, 2);</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">commit;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">select count(id) from b;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Count is still 1</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>After a similar set of actions, when user 1 reads the count again (line 5) it won&rsquo;t have changed despite user 2&rsquo;s insertion.</p>
+
+<h3>Serializable transactions</h3>
+
+<p>The most strict isolation level prohibits phantom reads (in SQL standard, they&rsquo;re already prohibited at &ldquo;repeatable read&rdquo; level in Postgres). Additionally, at serializable level, a user can expect that concurrent transactions would have the same effect as if they were applied serially, one after another. This requirement allows to catch complex cases where dependencies between concurrent transactions are introduced.</p>
+
+<p>First, table <code>b</code> looks like this:</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">id</th>
+<th scope="col" class="org-right">value</th>
+<th scope="col" class="org-left">notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">100</td>
+<td class="org-left">a</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">200</td>
+<td class="org-left">a</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-right">300</td>
+<td class="org-left">b</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-right">400</td>
+<td class="org-left">b</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>Let&rsquo;s consider an example, first at &ldquo;repeatable read&rdquo; level.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin transaction isolation level repeatable read;</td>
+<td class="org-left">begin transaction isolation level repeatable read;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select sum(value) from b where notes = 'a';</td>
+<td class="org-left">select sum(value) from b where notes = 'b';</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Sees 400</td>
+<td class="org-left">&#x2013; Sees 700</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">insert into b values (5, 400, 'b');</td>
+<td class="org-left">insert into b values (6, 700, 'a');</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">commit;</td>
+<td class="org-left">commit;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>Repeatable read transactions will allow both users to commit even though after User 1 inserts the sum, User 2&rsquo;s sum is no longer correct.</p>
+
+<p>Consider the same scenario but with serializable transactions.</p>
+
+<p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">Ln.</th>
+<th scope="col" class="org-left">User 1</th>
+<th scope="col" class="org-left">User 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">begin transaction isolation level serializable;</td>
+<td class="org-left">begin transaction isolation level serializable;</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">select sum(value) from b where notes = 'a';</td>
+<td class="org-left">select sum(value) from b where notes = 'b';</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-left">&#x2013; Sees 400</td>
+<td class="org-left">&#x2013; Sees 700</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">insert into b values (5, 400, 'b');</td>
+<td class="org-left">insert into b values (6, 700, 'a');</td>
+</tr>
+</tbody>
+<tbody>
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">commit;</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</p>
+
+<p>In this case, User 1 can successful commit, but if User 2 tries to do it, they will get an error:</p>
+
+<pre><code>ERROR:  could not serialize access due to read/write dependencies among transactions
+DETAIL:  Reason code: Canceled on identification as a pivot, during commit attempt.
+HINT:  The transaction might succeed if retried.
+</code></pre>
+
+<p>The transaction won&rsquo;t be committed. As the error suggests, retrying the transaction might work (assuming there won&rsquo;t be another concurrent transaction such as User 1&rsquo;s). Importantly, if user 2 retried, a different value would be inserted (as the result of the sum query would have been different considering user 1&rsquo;s already committed insert).</p>
+
+<p>The error warns about <code>read/write dependencies among transactions</code>. It&rsquo;s what serializable transactions protect against as they ensure that concurrent transactions are performed as if they were applied one after another, without dependencies between transactions.</p>
+
+<p>The error also mentions another issue that application developers dealing with &ldquo;repeatable read&rdquo; and serializable transactions must be aware of. Transactions can fail due to additional checks protecting against concurrent updates but may succeed if tried again. Applications need to be prepared to handle those cases.</p>
+
+<h2>Summary</h2>
+
+<p>Behavior of concurrent access to resources such as databases can be a complex topic. This article describes how concurrent access can be managed using SQL transactions, including transaction isolation levels, and how certain patterns of access can affect performance.</p>
+
+    </div>
+    <div id="footer">
+  <a href="https://lchsk.com">2020 lchsk.com</a> |
+  <a href="index.html">Home</a> |
+  <a href="posts.html">Posts</a> |
+  <a href="projects.html">Projects</a> |
+  <a href="about.html">About</a>
+</div>
+
+  </div>
+  </body>
+</html>

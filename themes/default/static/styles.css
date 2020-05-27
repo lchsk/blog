@@ -105,3 +105,11 @@ hr {
 	height: 1px;
 	background: #aaa;
 }
+
+table, th, td {
+  border: 1px solid #aaa;
+}
+
+table td {
+	font-family: monospace;
+}

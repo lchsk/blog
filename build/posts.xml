@@ -4,7 +4,13 @@
     <link>https://lchsk.com</link>
     <description>Home page of Maciej Lechowski; blog, open source projects; c++, python, go, emacs, linux</description>
     <managingEditor> (Maciej Lechowski)</managingEditor>
-    <pubDate>Mon, 25 May 2020 13:25:39 +0100</pubDate>
+    <pubDate>Wed, 27 May 2020 22:32:52 +0100</pubDate>
+    <item>
+      <title>Database transactions, concurrency, isolation levels, and PostgreSQL</title>
+      <link>https://lchsk.com/database-transactions-concurrency-isolation-levels-and-postgresql.html</link>
+      <description>Behavior of concurrent access to resources such as databases can be a complex topic. This article describes how concurrent access can be managed using SQL transactions, including transaction isolation levels, and how certain patterns of access can affect performance.</description>
+      <pubDate>Wed, 27 May 2020 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Building a video game in C for a weekend game jam</title>
       <link>https://lchsk.com/building-a-video-game-in-c-for-a-weekend-game-jam.html</link>
