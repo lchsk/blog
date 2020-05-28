@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+  <head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-119994839-1');
+</script>
+
+    <meta charset="UTF-8">
+    <meta name="description" content="Performance tests of concurrent operations in PostgreSQL. Read how different SQL operations are performing under different load, different isolation level in Postgres.">
+    <meta name="keywords" content="benchmarking postgres, benchmark, concurrent operations, postgresql, isolation levels, transaction isolation levels, concurrency, concurrent transactions, database performance, graphs, postgres operations performance, read committed, repeatable read, serializable transactions, read uncommitted transactions, performance tests postgres, acid transactions, atomic transactions, postgres transactions, SQL transactions, isolation levels, C++, C++ Postgres, C++ libpqxx, pqxx, pqxx postgres library">
+    <meta name="author" content="Maciej Lechowski">
+    <title>Benchmarking concurrent operations in PostgreSQL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link rel="alternate" type="application/rss+xml" href="posts.xml" />
+  </head>
+  <body>
+    <div class="article">
+	  <div id="header">
+  <a href="index.html">Home</a> |
+  <a href="posts.html">Posts</a> |
+  <a href="projects.html">Projects</a> |
+  <a href="about.html">About</a>
+</div>
+
+    <h1>Benchmarking concurrent operations in PostgreSQL</h1>
+    <div id="text" style="max-width: 760px;">
+      Published 2020-05-28
+      <p>More:</p>
+
+<ul>
+<li><p>Context: <a href="database-transactions-concurrency-isolation-levels-and-postgresql.html" title="Behavior of concurrent access to resources such as databases can be a complex topic. This article describes how concurrent access can be managed using SQL transactions, including transaction isolation levels, and how certain patterns of access can affect performance.">Database transactions, concurrency, isolation levels, and PostgreSQL</a></p></li>
+
+<li><p><a href="https://github.com/lchsk/postgresql_transactions">Benchmark application source code</a></p></li>
+</ul>
+
+<p>When preparing the article about concurrency in PostgreSQL (<a href="database-transactions-concurrency-isolation-levels-and-postgresql.html" title="Behavior of concurrent access to resources such as databases can be a complex topic. This article describes how concurrent access can be managed using SQL transactions, including transaction isolation levels, and how certain patterns of access can affect performance.">Database transactions, concurrency, isolation levels, and PostgreSQL</a>) I was also working on a benchmark that would give me an overview of how different operations are performing in a concurrent environment, under different load, and under different configuration (transaction isolation level).</p>
+
+<p>I&rsquo;ve prepared a C++ application that benchmarks a number of different operations in Postgres. It simulates a concurrent environment with different isolation levels. It&rsquo;s available on <a href="https://github.com/lchsk/postgresql_transactions">my Github account</a>.</p>
+
+<h2>Tests</h2>
+
+<p>There&rsquo;s a number of tests to see how SQL operations are affected by increasing concurrency (using the <code>--threads</code> parameter). In this article, I present results obtained by running the application with 100, 200, 400, 800, and 1600 threads at once.</p>
+
+<p>You can see the SQL code executed by tests <a href="https://github.com/lchsk/postgresql_transactions/blob/master/src/tasks.cpp">here</a>.</p>
+
+<p>The following tests were performed:</p>
+
+<ul>
+<li><p><code>Simple insert</code>: inserts a new row into a table.</p></li>
+
+<li><p><code>Single row update</code>: updates a single row in a table. In a concurrent environment this leads to a lot of waiting due to concurrent transactions waiting to be able to modify the same row. In case of &ldquo;repeatable read&rdquo; and &ldquo;serializable&rdquo; isolation levels, it needs to handle serialization failure (i.e. when a transaction cannot be committed because another transaction already committed their changes). Those cases are retried until they succeed.</p></li>
+
+<li><p><code>Random row update</code>: similar to the <code>single row update</code> test but instead updates a random row. This doesn&rsquo;t constantly put a lock on the same row.</p></li>
+
+<li><p><code>Select for update single row</code>: runs a <code>select for update</code> query to put a lock on a single row.</p></li>
+
+<li><p><code>Select for update skip locked</code>: runs a <code>select for update skip locked</code> query to select the first unlocked row.</p></li>
+
+<li><p><code>Select for update with foreign key</code>: all transactions run <code>select for update</code> queries on table <code>e</code> which has a foreign key to table <code>d</code>. The outcome of this is that the table <code>d</code> gets locked, too.</p></li>
+
+<li><p><code>Select single row</code>: runs a simple <code>select</code> to get 1 row.</p></li>
+</ul>
+
+<h2>Observations</h2>
+
+<p><img src="./data/txn_read_committed.png" alt="Benchmark results for the read committed isolation level" title="Benchmark results for the read committed isolation level" />
+<em>Benchmark results for the &ldquo;read committed&rdquo; isolation level.</em></p>
+
+<ul>
+<li><p>Most expensive operations include: many concurrent updates of a single row, <code>select for update</code> queries (especially when foreign keys are involved). This is understandable, updating data concurrently is a dangerous operation so it requires a lot of care.</p></li>
+
+<li><p>Many concurrent transactions trying to update the exact same row gets very expensive. For instance, updating the same row concurrently is about 5 times more expensive than updating a random row, 2222 ms vs. 425 ms (800 threads, 10 connections, read_committed isolation level).</p></li>
+
+<li><p>Concurrent updates get significantly less expensive if they&rsquo;re not all trying to update the same data but instead lock different, individual rows (except at &ldquo;serializable&rdquo; isolation level, see later).</p></li>
+</ul>
+
+<p><img src="./data/txn_repeatable_read.png" alt="Benchmark results for the repeatable read isolation level" title="Benchmark results for the repeatable read isolation level" />
+<em>Benchmark results for the &ldquo;repeatable read&rdquo; isolation level.</em></p>
+
+<ul>
+<li><p>Simple <code>select</code> queries are cheap.</p></li>
+
+<li><p><code>Insert</code> queries, even if done concurrently, are actually quite cheap. This is because they don&rsquo;t require the same kind of protections as <code>updates</code> do.</p></li>
+
+<li><p><code>Select for update</code> with <code>skip locked</code> option is quite cheap. This is because it doesn&rsquo;t wait to get required data but instead returns immediately (which means it might not necessarily get the data you want).</p></li>
+
+<li><p><code>Select for update</code> is also dangerous because you can easily put more locks that it may seem. This happens due to foreign keys. Test &ldquo;select for update with foreign key&rdquo; is the slowest of all on &ldquo;read committed&rdquo; and &ldquo;repeatable read&rdquo; isolation level (but not on &ldquo;serializable&rdquo; level).</p></li>
+</ul>
+
+<p><img src="./data/txn_serializable.png" alt="Benchmark results for the serializable isolation level" title="Benchmark results for the serializable isolation level" />
+<em>Benchmark results for the &ldquo;serializable&rdquo; isolation level.</em></p>
+
+<ul>
+<li>Looking at performance of different operations across isolation levels is interesting but the results are mostly what you would expect. <code>Insert</code>, <code>select for update</code>, (with and without <code>skip locked</code>) perform similarly in all isolation levels. <code>select for update</code> (with foreign key) and especially updating a single row get more expensive at higher isolation levels.</li>
+</ul>
+
+<p><img src="./data/txn_different_levels.png" alt="Comparison of operations across transaction isolation levels" title="Comparison of operations across transaction isolation levels" />
+<em>Comparison of operations across transaction isolation levels.</em></p>
+
+<ul>
+<li>Performance of &ldquo;random row update&rdquo; test is surprising. Whilst it&rsquo;s a bit faster at &ldquo;repeatable read&rdquo; level, it takes about 5 times longer at the serializable level. The difference is less pronounced for the &ldquo;single row update&rdquo; test which is interesting. I think what might be happening there is that by updating different rows in different transactions (rather than the same row in all transactions), we might be triggering checks protecting against dependencies between transactions (which is one of the features of the serializable level).</li>
+</ul>
+
+<h2>Benchmark application</h2>
+
+<p><a href="https://github.com/lchsk/postgresql_transactions">It&rsquo;s written in C++</a> and uses <code>pqxx</code> library to connect to Postgres. It requires a C++17 compiler (tested with gcc 10). It&rsquo;s been tested with PostgreSQL 12.3.</p>
+
+<p>It has a number of parameters that change its behavior. Run the application with <code>--help</code> option to see them all.</p>
+
+<p><code>--threads</code> option tells the program how many threads it should run. By default, the application will open 10 connections to Postgres (it can be changed with <code>--connections</code>) and run threads to simulate the concurrent access to the database. At the end of a run, it prints the timings for each operation.</p>
+
+<p>To gather benchmarks, it&rsquo;s useful to run it with <code>--repetitions [n]</code> which will run every test <code>n</code> times and compute average timings.</p>
+
+<p>The transaction isolation level used in tests must be changed in the source code (<code>src/tasks.hpp</code> - <code>isolation</code> constant). Available options include: <code>read_committed</code>, <code>repeatable_read</code>, and <code>serializable</code>.</p>
+
+<p>The data gathered for the results presented here is <a href="https://github.com/lchsk/postgresql_transactions">available in an <code>.ods</code> spreadsheet</a>.</p>
+
+<p>To find out how to run the tests on your own machine, see the <a href="https://github.com/lchsk/postgresql_transactions">README file</a>.</p>
+
+    </div>
+    <div id="footer">
+  <a href="https://lchsk.com">2020 lchsk.com</a> |
+  <a href="index.html">Home</a> |
+  <a href="posts.html">Posts</a> |
+  <a href="projects.html">Projects</a> |
+  <a href="about.html">About</a>
+</div>
+
+  </div>
+  </body>
+</html>
