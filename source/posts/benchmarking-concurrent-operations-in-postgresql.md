@@ -1,7 +1,7 @@
 ---
 title: Benchmarking concurrent operations in PostgreSQL
 created: 2020-05-28T00:00:00Z
-description: Performance tests of concurrent operations in PostgreSQL. Read how different SQL operations are performing under different load, different isolation level in Postgres.
+description: Performance tests of concurrent operations in PostgreSQL. Read how different SQL operations are performing under different load, different isolation levels in Postgres.
 keywords: benchmarking postgres, benchmark, concurrent operations, postgresql, isolation levels, transaction isolation levels, concurrency, concurrent transactions, database performance, graphs, postgres operations performance, read committed, repeatable read, serializable transactions, read uncommitted transactions, performance tests postgres, acid transactions, atomic transactions, postgres transactions, SQL transactions, isolation levels, C++, C++ Postgres, C++ libpqxx, pqxx, pqxx postgres library
 ---
 

@@ -4,11 +4,11 @@
     <link>https://lchsk.com</link>
     <description>Home page of Maciej Lechowski; blog, open source projects; c++, python, go, emacs, linux</description>
     <managingEditor> (Maciej Lechowski)</managingEditor>
-    <pubDate>Thu, 28 May 2020 22:32:52 +0100</pubDate>
+    <pubDate>Fri, 29 May 2020 18:20:01 +0100</pubDate>
     <item>
       <title>Benchmarking concurrent operations in PostgreSQL</title>
       <link>https://lchsk.com/benchmarking-concurrent-operations-in-postgresql.html</link>
-      <description>Performance tests of concurrent operations in PostgreSQL. Read how different SQL operations are performing under different load, different isolation level in Postgres.</description>
+      <description>Performance tests of concurrent operations in PostgreSQL. Read how different SQL operations are performing under different load, different isolation levels in Postgres.</description>
       <pubDate>Thu, 28 May 2020 00:00:00 +0000</pubDate>
     </item>
     <item>
