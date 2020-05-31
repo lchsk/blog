@@ -15,3 +15,8 @@ slug = "posts"
 title = "Posts"
 Description = "Posts and articles. Open source projects; c++, python, go, emacs, linux"
 Keywords = ["open source", "c++", "python", "go", "rust", "emacs", "linux"]
+
+[static]
+copy = [
+     {from = "special/alive_game", to = "./"}
+]
