@@ -5,22 +5,9 @@ description: Projects - personal projects
 keywords: lchsk, projects, github, sanchosql, xstarter, cpp, go, golang, c, gamedev
 ---
 
+- {{@command-line-projects}}
 - {{@games}}
 - {{@web-projects}}
-
-<h2>xstarter</h2>
-
-**Application launcher for Linux**
-
-Links: <a href="https://lchsk.com/xstarter" title="xstarter website">website</a> | <a href="https://github.com/lchsk/xstarter" title="xstarter source code">source code</a>
-
-It lives in terminal and works well with tiling window managers (e.g. xmonad, i3 etc).
-
-<code>C, ncurses</code>
-
-![xstarter terminal launcher](./data/projects/xstarter.png "xstarter application launcher for linux")
-
-<hr/>
 
 <h2>SanchoSQL</h2>
 
@@ -94,26 +81,6 @@ Links: <a href="https://github.com/lchsk/simplepacker" title="simplepacker - spr
 <pre>$ simplepacker -i ./examples -o output2.jpg --height 200 --padding 5 --json</pre>
 
 ![Example simplepacker output](./data/projects/simplepacker.jpg "simplepacker example output")
-
-<hr/>
-
-<h2>derid</h2>
-
-Terminal-based, dired-inspired file manager (*in progress*)
-
-<code>C++, ncurses</code>
-
-Links: <a href="https://github.com/lchsk/derid" title="derid dired c++ terminal file manager">source code</a>
-
-<hr/>
-
-<h2>helm-xstarter</h2>
-
-This Emacs package offers a Helm interface for [xstarter](https://lchsk.com/xstarter). It loads a list of installed applications and lets a user select one to launch.
-
-Links: <a href="https://github.com/lchsk/helm-xstarter" title="xstarter helm">source code</a>
-
-![helm xstarter interface](./data/projects/helm_xstarter.png)
 
 <hr/>
 
