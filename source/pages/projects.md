@@ -35,28 +35,6 @@ SanchoSQL is a desktop client application for PostgreSQL database. It allows vie
 
 <hr/>
 
-<h2>Knight General</h2>
-
-**Turn-based strategy for Ludum Dare 42. Theme: Running out of space**
-
-Knight General is inspired by classic turn-based strategy games. The aim of the game is to control the whole map (so that the enemy 'runs out of space'). To do so, a player can move their units into enemy territory, thus increasing their possessions. Each player can buy more units, all of which can fight the enemies and collect resources. Units are bought with coins, which each player collects by:
-
-- gathering resources
-- receiving a payout at the beginning of each turn, which depends on the size of owned land
-
-<a title="knight general turn based game" href="./data/projects/knight_general.png"><img height="400" src="./data/projects/knight_general.png" title="knight general turn based game" alt="knight general"/></a>
-
-<code>C++, SFML</code>
-
-Links: 
-
-- [source code](https://github.com/lchsk/knight-general "Turn-based strategy for Ludum Dare 42. Theme: Running out of space")
-- [gameplay video](https://www.youtube.com/watch?v=wPX_rOMkLKs "Turn-based strategy for Ludum Dare 42. Theme: Running out of space")
-- [blog post](https://lchsk.com/making-a-turn-based-strategy-game-in-cpp-in-72-hours.html "Turn-based strategy for Ludum Dare 42. Theme: Running out of space")
-- [Ludum Dare 42 entry](https://ldjam.com/events/ludum-dare/42/knight-general "Turn-based strategy for Ludum Dare 42. Theme: Running out of space")
-
-<hr/>
-
 <h2>Scipio</h2>
 
 A static website generator, powering this website.
@@ -157,46 +135,6 @@ Language Monster - games to teach foreign languages vocabulary.
 Links: <a href="https://github.com/lchsk/language-monster" title="Language Monster games">source code</a>
 
 ![Language Monster example game](./data/projects/language_monster.png)
-
-<hr/>
-
-<h2>Pimp my tank</h2>
-
-A video game created for GitHub Game Off 2016 (Theme is Hacking, Modding, or Augmenting).
-
-The aim of the game is to control your tank and hit other players' (human or computer controlled) tanks. The user the modify his/her tank (by buying new weapons, changing tank's colour) as well as alter the environment (by changing the wind speed which makes shooting missiles quite tricky).
-
-<code>C++, SFML</code>
-
-Links: 
-- [source code](https://github.com/lchsk/pimp-my-tank "tanks game")
-- [gameplay video](https://www.youtube.com/watch?v=-8dq__x5j-Q "tanks gameplay video")
-
-<a title="pimy my tank game" href="./data/projects/pimp_my_tank.png"><img height="400" src="./data/projects/pimp_my_tank.png" title="tanks" alt="tanks game"/></a>
-
-<hr/>
-
-<h2>Spaceoid</h2>
-
-Puzzle game for Android
-
-<code>Java, libgdx</code>
-
-Links: <a href="https://github.com/lchsk/spaceoid" title="Spaceoid puzzle game for Android">source code</a>
-
-<a title="spaceoid" href="./data/projects/spaceoid.png"><img height="400" src="./data/projects/spaceoid.png" title="spaceoid" alt="spaceoid"/></a>
-
-<hr/>
-
-<h2>*knights*</h2>
-
-An attempt at making a classic real-time strategy game
-
-<code>C++, SFML</code>
-
-Links: <a href="https://github.com/lchsk/knights" title="knights">source code</a>
-
-<a title="knight" href="./data/projects/knights_in_progress.png"><img height="400" src="./data/projects/knights_in_progress.png" title="knights" alt="knights"/></a>
 
 <hr/>
 
