@@ -22,6 +22,18 @@ Links:
 
 <hr/>
 
+## Repetition
+
+Spaced repetition in terminal.
+
+`Go`
+
+Links:
+
+- [Source code](https://github.com/lchsk/repetition)
+
+<hr/>
+
 ## helm-xstarter
 
 This Emacs package offers a Helm interface for [xstarter](https://lchsk.com/xstarter). It loads a list of installed applications and lets a user select one to launch.

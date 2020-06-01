@@ -31,7 +31,31 @@ Links:
 
 - [Source code](https://github.com/lchsk/language-monster "Language Monster games")
 
+<hr/>
 
+## Baseball API
 
+### Simple API with access to historical baseball data
 
+<code>Go</code>
 
+Links:
+
+- [Source code](https://github.com/lchsk/baseballapi)
+
+<hr/>
+
+## Django insecure
+
+### Example of an insecure Django application
+
+Simple Django application presenting a number of security vulnerabilities.
+
+More in the blog post: {{@stay-paranoid-and-trust-no-one-overview-of-common-security-vulnerabilities-in-web-applications}}
+
+`Python, Django`
+
+Links:
+
+- Blog post: {{@stay-paranoid-and-trust-no-one-overview-of-common-security-vulnerabilities-in-web-applications}}
+- [Source code](https://github.com/lchsk/django-insecure)
