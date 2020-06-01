@@ -6,6 +6,7 @@ keywords: lchsk, projects, github, sanchosql, xstarter, cpp, go, golang, c, game
 ---
 
 - {{@games}}
+- {{@web-projects}}
 
 <h2>xstarter</h2>
 
@@ -123,18 +124,6 @@ A header-only parallel functions library for Intel Xeon/Xeon Phi/GPUs.
 <code>C++</code>
 
 Links: [source code](https://github.com/lchsk/ney "ney A header-only parallel functions library for Intel Xeon/Xeon Phi/GPUs ")
-
-<hr/>
-
-<h2>Language Monster</h2>
-
-Language Monster - games to teach foreign languages vocabulary.
-
-<code>Python, Django, JavaScript</code>
-
-Links: <a href="https://github.com/lchsk/language-monster" title="Language Monster games">source code</a>
-
-![Language Monster example game](./data/projects/language_monster.png)
 
 <hr/>
 
