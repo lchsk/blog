@@ -2,8 +2,10 @@
 title: Projects
 created: 2018-12-28T00:00:00Z
 description: Projects - personal projects
-keywords: lchsk, projects, github, sanchosql, xstarter
+keywords: lchsk, projects, github, sanchosql, xstarter, cpp, go, golang, c, gamedev
 ---
+
+- {{@games}}
 
 <h2>xstarter</h2>
 
