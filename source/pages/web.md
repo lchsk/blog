@@ -5,13 +5,23 @@ description: Web development projects
 keywords: lchsk, projects, github, sanchosql, xstarter, cpp, go, golang, c, gamedev, python, web
 ---
 
+## Scipio
+
+A static website generator, powering this website.
+
+Originally written in Rust, then rewritten in Golang.
+
+Links:
+
+- Blog post: {{@static-websites-in-golang-and-rust}}
+- [source code (Go)](https://github.com/lchsk/scipio)
+- [source code (Rust)](https://github.com/lchsk/scipio-rust)
+
+<hr/>
+
 ## Language Monster
 
 ### Language Monster - games to teach foreign languages vocabulary
-
-- [**Play the game online**](alive_game)
-
-The theme this time was 'Keep it alive'. I have decided to consider it literally and create a survival game. The main character is being attacked by an endless wave of enemies. The player must keep him alive as long as possible (although he will eventually succumb as there's no actual way of winning).
 
 ![Language Monster example game](./data/projects/language_monster.png)
 
@@ -20,3 +30,8 @@ The theme this time was 'Keep it alive'. I have decided to consider it literally
 Links:
 
 - [Source code](https://github.com/lchsk/language-monster "Language Monster games")
+
+
+
+
+

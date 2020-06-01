@@ -23,23 +23,6 @@ SanchoSQL is a desktop client application for PostgreSQL database. It allows vie
 
 <hr/>
 
-<h2>Scipio</h2>
-
-A static website generator, powering this website.
-
-Originally written in Rust, then rewritten in Golang.
-
-Blog article: {{@static-websites-in-golang-and-rust}}
-
-<code>Rust, Go</code>
-
-Links:
-
-- <a href="https://github.com/lchsk/scipio" title="scipio static website generator">source code (Go)</a>
-- <a href="https://github.com/lchsk/scipio-rust" title="scipio static website generator">source code (Rust)</a>
-
-<hr/>
-
 <h2>Simple ECS</h2>
 
 A simple header-only implementation of an entity-component system.
