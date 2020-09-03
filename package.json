@@ -4,8 +4,8 @@
   "description": "",
   "main": "",
   "scripts": {
-    "sass": "./node_modules/sass/sass.js --no-source-map --style=compressed ./themes/default/bundle.scss ./themes/default/static/styles.css",
-    "sass-watch": "./node_modules/sass/sass.js --no-source-map --style=compressed --watch ./themes/default/bundle.scss ./themes/default/static/styles.css"
+    "sass": "./node_modules/sass/sass.js --no-source-map --style=compressed ./themes/default/bundle.scss ./themes/default/static/styles2.css",
+    "sass-watch": "./node_modules/sass/sass.js --no-source-map --style=compressed --watch ./themes/default/bundle.scss ./themes/default/static/styles2.css"
   },
   "keywords": [],
   "author": "",
