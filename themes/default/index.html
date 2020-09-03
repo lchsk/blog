@@ -11,44 +11,32 @@
     {{#include google.html}}
   </head>
   <body>
-    <div id="text" class="article">
-	  {{#include top_menu.html}}
-      <p>
-        {{title}}
-      </p>
+  <div class="container">
+    {{#include top_menu.html}}
 
-      <h2><a href="posts.html">Posts</a> (<a title="rss" href="posts.xml">rss</a>)</h2>
-      <ul id="post-list">
+  <main role="main" class="container">
+    <div class="row">
+      <div class="col-md-8 blog-main">
+        <h3 class="pb-4 mb-4 font-italic border-bottom">
+          Recent posts
+        </h3>
+
         {{posts-begin}}
-        <li>{{post_link}}</li>
-	    <span class="date">{{post_date}}</span>
+        <div class="blog-post">
+        <h2>{{post_link}}</h2>
+          <p class="blog-post-meta">{{post_date}}</p>
+          <p>{{post_description}}</p>
+        </div>
         {{posts-end}}
-      </ul>
+      </div>
 
-	  <h2>{{@projects}}</h2>
-      <ul id="post-list">
-        <li>
-          <a href="https://lchsk.com/xstarter" title="xstarter - linux terminal application launcher"><b>xstarter</b></a><br/>
-          application launcher<br/>
-          <a href="https://lchsk.com/xstarter" title="xstarter website">website</a> | <a href="https://github.com/lchsk/xstarter" title="xstarter source code">source code</a>
-        </li>
-        <li>See more: {{@projects}}</li>
-      </ul>
+      {{#include side_bar.html}}
+    </div><!-- /.row -->
 
-      <h2>Updates</h2>
-      <ul id="post-list">
-        <li>01/06/2020 <a href="alive_game">My submission for Ludum Dare 46 online</a></li>
-        <li>25/05/2020 <a href="https://github.com/lchsk/xstarter/releases">Released xstarter v0.8.1 that compiles with gcc10</a></li>
-      </ul>
+  </main><!-- /.container -->
 
-	  <h2>External links</h2>
-      <ul id="post-list">
-        <li><a href="https://github.com/lchsk" title="lchsk github profile">github</a></li>
-        <li><a href="https://twitter.com/lchsk" title="lchsk twitter profile">twitter</a></li>
-        <li><a href="https://www.linkedin.com/in/maciej-lechowski" title="lchsk linkedin profile">linkedin</a></li>
-      </ul>
-	  <h2>{{@about}}</h2>
-	  {{#include footer_menu.html}}
-    </div>
+  <footer class="blog-footer">
+    {{#include footer_menu.html}}
+  </footer>
   </body>
 </html>

@@ -1,0 +1,20 @@
+$my-color-1: #161B33;
+$my-color-2: #F1DAC4;
+$my-color-3: #474973;
+$my-color-4: #ffff00;
+$my-color-5: #ffff00;
+
+$primary: $my-color-1;
+$secondary: $my-color-3;
+$light: $my-color-2;
+$dark: $my-color-3;
+
+$btn-padding-y: 5px;
+$btn-padding-x: 8px;
+$btn-border-radius: 4px;
+$btn-border-width: 0;
+$input-btn-focus-width: 0;
+
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+

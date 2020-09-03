@@ -1,0 +1,107 @@
+body {
+	font-family: "Georgia", serif;
+	margin: 5pt;
+	padding: 0;
+}
+
+a:link, a:active {
+	color: #113399;
+	text-decoration: none;
+}
+
+a:visited {
+	color: #000099;
+}
+
+a:hover {
+    text-decoration: underline;
+	background-color: #f9f9f9;
+}
+
+div#text {
+	font-size: 1.2em;
+	line-height: 140%;
+}
+
+div.article {
+	max-width: 760px;
+	margin: auto;
+	padding: 0;
+}
+
+div.article img {
+	max-width: 100%;
+	height: auto;
+}
+
+div.article pre {
+	overflow-x: auto;
+}
+
+div.article code {
+	word-break: break-word;
+}
+
+div.article a {
+	word-break: break-word;
+}
+
+div#header {
+	font-size: 12pt;
+}
+
+div#header a {
+	font-size: 15pt;
+}
+
+div#footer {
+	border-top: 1px solid #eee;
+	margin-top: 10px;
+	padding-top: 10px;
+}
+
+div#footer a {
+	font-size: 15pt;
+}
+
+
+ul#post-list {
+	list-style-type: none;
+	padding-left: 0;
+}
+
+ul#post-list li {
+	margin-top: 12pt;
+}
+
+ul#post-list .date {
+	color: #111111;
+	font-size: 90%;
+}
+
+pre {
+	padding: 5px;
+	background-color: #f9f9f9;
+}
+
+code {
+	background-color: #f9f9f9;
+}
+
+hr {
+	border: 0;
+	padding: 0;
+	margin-top: 50px;
+	margin-bottom: 50px;
+	height: 2px;
+    width: 200px;
+	background: #eee;
+}
+
+table, th, td {
+  border: 1px solid #aaa;
+}
+
+table td {
+	font-family: monospace;
+}

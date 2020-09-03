@@ -1,5 +1,5 @@
 ---
-title: About / contact
+title: About
 created: 2019-06-09T00:00:00Z
 description: Maciej Lechowski - contact / about
 keywords: lchsk, contact, maciej, lechowski
