@@ -90,8 +90,9 @@
 
 <h2>Observations</h2>
 
-<p><img src="./data/txn_read_committed.png" alt="Benchmark results for the read committed isolation level" title="Benchmark results for the read committed isolation level" />
-<em>Benchmark results for the &ldquo;read committed&rdquo; isolation level.</em></p>
+<p><a href="./data/txn_read_committed.png"><img src="./data/txn_read_committed.png" alt="Benchmark results for the read committed isolation level"/></a></p>
+
+<p><em>Benchmark results for the &ldquo;read committed&rdquo; isolation level.</em></p>
 
 <ul>
 <li><p>Most expensive operations include: many concurrent updates of a single row, <code>select for update</code> queries (especially when foreign keys are involved). This is understandable, updating data concurrently is a dangerous operation so it requires a lot of care.</p></li>
@@ -101,8 +102,9 @@
 <li><p>Concurrent updates get significantly less expensive if they&rsquo;re not all trying to update the same data but instead lock different, individual rows (except at &ldquo;serializable&rdquo; isolation level, see later).</p></li>
 </ul>
 
-<p><img src="./data/txn_repeatable_read.png" alt="Benchmark results for the repeatable read isolation level" title="Benchmark results for the repeatable read isolation level" />
-<em>Benchmark results for the &ldquo;repeatable read&rdquo; isolation level.</em></p>
+<p><a href="./data/txn_repeatable_read.png"><img src="./data/txn_repeatable_read.png" alt="Benchmark results for the repeatable read isolation level"/></a></p>
+
+<p><em>Benchmark results for the &ldquo;repeatable read&rdquo; isolation level.</em></p>
 
 <ul>
 <li><p>Simple <code>select</code> queries are cheap.</p></li>
@@ -114,15 +116,17 @@
 <li><p><code>Select for update</code> is also dangerous because you can easily put more locks that it may seem. This happens due to foreign keys. Test &ldquo;select for update with foreign key&rdquo; is the slowest of all on &ldquo;read committed&rdquo; and &ldquo;repeatable read&rdquo; isolation level (but not on &ldquo;serializable&rdquo; level).</p></li>
 </ul>
 
-<p><img src="./data/txn_serializable.png" alt="Benchmark results for the serializable isolation level" title="Benchmark results for the serializable isolation level" />
-<em>Benchmark results for the &ldquo;serializable&rdquo; isolation level.</em></p>
+<p><a href="./data/txn_serializable.png"><img src="./data/txn_serializable.png" alt="Benchmark results for the serializable isolation level"/></a></p>
+
+<p><em>Benchmark results for the &ldquo;serializable&rdquo; isolation level.</em></p>
 
 <ul>
 <li>Looking at performance of different operations across isolation levels is interesting but the results are mostly what you would expect. <code>Insert</code>, <code>select for update</code>, (with and without <code>skip locked</code>) perform similarly in all isolation levels. <code>select for update</code> (with foreign key) and especially updating a single row get more expensive at higher isolation levels.</li>
 </ul>
 
-<p><img src="./data/txn_different_levels.png" alt="Comparison of operations across transaction isolation levels" title="Comparison of operations across transaction isolation levels" />
-<em>Comparison of operations across transaction isolation levels.</em></p>
+<p><a href="./data/txn_different_levels.png"><img src="./data/txn_different_levels.png" alt="Comparison of operations across transaction isolation levels"/></a></p>
+
+<p><em>Comparison of operations across transaction isolation levels.</em></p>
 
 <ul>
 <li>Performance of &ldquo;random row update&rdquo; test is surprising. Whilst it&rsquo;s a bit faster at &ldquo;repeatable read&rdquo; level, it takes about 5 times longer at the serializable level. The difference is less pronounced for the &ldquo;single row update&rdquo; test which is interesting. I think what might be happening there is that by updating different rows in different transactions (rather than the same row in all transactions), we might be triggering checks protecting against dependencies between transactions (which is one of the features of the serializable level).</li>

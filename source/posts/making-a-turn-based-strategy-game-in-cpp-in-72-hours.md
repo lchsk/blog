@@ -23,7 +23,7 @@ All things considered, strategy games might be the worst genre choice for game j
 
 Clearly, in order to have something finished in 72 hours, a lot has to be dropped or simplified.
 
-![Knight General screenshot](./data/knight_general.png)
+<a href="./data/knight_general.png"><img src="./data/knight_general.png" alt="Knight General screenshot"/></a>
 
 *A screenshot of the completed game; units of two different sides are visible along with the land they own. A piece of rock in the middle can be collected and exchanged for money that can be used to buy more units.*
 

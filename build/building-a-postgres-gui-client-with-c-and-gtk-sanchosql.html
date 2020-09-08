@@ -58,7 +58,7 @@
 
 <p>There aren&rsquo;t many Postgres GUI clients developed for Linux. Those available are usually heavy and bloated. I was looking for a minimalistic option that works fast and has a simple and intuitive interface. I wanted to build one for myself so that it includes features I need and is as small as possible.</p>
 
-<p><img src="./data/projects/sanchosql.png" alt="SanchoSQL SQL editor view" title="SanchoSQL editor view" /></p>
+<p><a href="./data/projects/sanchosql.png"><img src="./data/projects/sanchosql.png" alt="SanchoSQL SQL editor view"/></a></p>
 
 <h2>C++ and GTK</h2>
 
@@ -72,13 +72,13 @@
 
 <p>Values can be updated by simply double clicking on a row, changing a value and committing the transaction. Adding and deleting rows is also possible from UI.</p>
 
-<p><img src="./data/projects/sanchosql_table_view_2.png" alt="SanchoSQL editing values in UI" title="SanchoSQL - editing values in UI" /></p>
+<p><a href="./data/projects/sanchosql_table_view_2.png"><img src="./data/projects/sanchosql_table_view_2.png" alt="SanchoSQL editing values in UI"/></a></p>
 
 <p>At the top, there are two extra fields that can be used to list just the columns you need to see (useful in case of tables with a lot of columns). Text field below allows to apply extra SQL filtering to the results (think <code>WHERE</code> conditions).</p>
 
 <p>User can view information about a table, including details such as columns and their types, as well as constraints and indices.</p>
 
-<p><img src="./data/projects/sanchosql_table_schema.png" alt="SanchoSQL Postgres table schema" title="SanchoSQL Postgres table schema" /></p>
+<p><a href="./data/projects/sanchosql_table_schema.png"><img src="./data/projects/sanchosql_table_schema.png" alt="SanchoSQL Postgres table schema"/></a></p>
 
 <p>Apart from tables, users can see views, triggers, functions, and sequences.</p>
 
@@ -88,7 +88,7 @@
 
 <p>At the moment, the desktop application is split into several libraries that are later statically built into a single binary file. The whole process is defined in CMake. The goal of this separation was to allow working on parts of the codebase that don&rsquo;t need to depend on each other. For instance, UI and database implementations are separated. I would like the split to be cleaner, as currently there are quite a few dependencies, e.g. database abstraction is coupled with the Postgres database communication.</p>
 
-<p>In an application like this, it&rsquo;s useful to have a clear distinction between the implementation and the user interface, so that it&rsquo;s possible to build different UIs that can easily implement the same functionality. At the current stage of this project, it would require some extra work to more clearly split the interface from the implementation.</p>
+<p>In an application like this, it&rsquo;s useful to have a clear distinction between the implementation, and the user interface, so that it&rsquo;s possible to build different UIs that can easily implement the same functionality. At the current stage of this project, it would require some extra work to more clearly split the interface from the implementation.</p>
 
 <h2>Summary</h2>
 

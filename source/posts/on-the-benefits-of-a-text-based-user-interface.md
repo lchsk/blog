@@ -15,7 +15,7 @@ Computer users spend a lot of their time navigating windows of open programs. If
 
 That's the problem tiling window managers are trying to solve. They take over user's screen and position application windows in a predictable way. Usually, they will make each window fill up any remaining space left on the screen. Switching between different applications is accomplished primarily using keyboard shortcuts and hence offers a steeper learning curve. However, proficient users don't remember all those shortcuts by heart. With enough practice, using key bindings to control the system becomes second nature and is performed without consciously thinking about all the exact combinations.
 
-![xmonad screenshot](./data/xmonad.png)
+<a href="./data/xmonad.png"><img src="./data/xmonad.png" alt="xmonad screenshot"/></a>
 
 *[xmonad](http://xmonad.org) with a terminal, chess and sudoku tiled in a single workspace*
 
@@ -35,7 +35,7 @@ Perhaps due to their specific nature, keyboard based programs encourage users to
 
 When I felt none of available application launchers suited me, I've built my own (xstarter, [website](https://lchsk.com/xstarter), [source code](https://github.com/lchsk/xstarter)) that I could control from terminal and that I use every day.
 
-![xstarter screenshot](./data/xstarter.png)
+<a href="./data/xstarter.png"><img src="./data/xstarter.png" alt="xstarter screenshot"/></a>
 
 *[xstarter](https://lchsk.com/xstarter) in action*
 

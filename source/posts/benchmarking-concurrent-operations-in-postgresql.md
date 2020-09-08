@@ -39,7 +39,9 @@ The following tests were performed:
 
 ## Observations
 
-![Benchmark results for the read committed isolation level](./data/txn_read_committed.png "Benchmark results for the read committed isolation level")
+
+<a href="./data/txn_read_committed.png"><img src="./data/txn_read_committed.png" alt="Benchmark results for the read committed isolation level"/></a>
+
 *Benchmark results for the "read committed" isolation level.*
 
 
@@ -49,7 +51,8 @@ The following tests were performed:
 
 - Concurrent updates get significantly less expensive if they're not all trying to update the same data but instead lock different, individual rows (except at "serializable" isolation level, see later).
 
-![Benchmark results for the repeatable read isolation level](./data/txn_repeatable_read.png "Benchmark results for the repeatable read isolation level")
+<a href="./data/txn_repeatable_read.png"><img src="./data/txn_repeatable_read.png" alt="Benchmark results for the repeatable read isolation level"/></a>
+
 *Benchmark results for the "repeatable read" isolation level.*
 
 - Simple `select` queries are cheap.
@@ -60,12 +63,14 @@ The following tests were performed:
 
 - `Select for update` is also dangerous because you can easily put more locks that it may seem. This happens due to foreign keys. Test "select for update with foreign key" is the slowest of all on "read committed" and "repeatable read" isolation level (but not on "serializable" level).
 
-![Benchmark results for the serializable isolation level](./data/txn_serializable.png "Benchmark results for the serializable isolation level")
+<a href="./data/txn_serializable.png"><img src="./data/txn_serializable.png" alt="Benchmark results for the serializable isolation level"/></a>
+
 *Benchmark results for the "serializable" isolation level.*
 
 - Looking at performance of different operations across isolation levels is interesting but the results are mostly what you would expect. `Insert`, `select for update`, (with and without `skip locked`) perform similarly in all isolation levels. `select for update` (with foreign key) and especially updating a single row get more expensive at higher isolation levels.
 
-![Comparison of operations across transaction isolation levels](./data/txn_different_levels.png "Comparison of operations across transaction isolation levels")
+<a href="./data/txn_different_levels.png"><img src="./data/txn_different_levels.png" alt="Comparison of operations across transaction isolation levels"/></a>
+
 *Comparison of operations across transaction isolation levels.*
 
 - Performance of "random row update" test is surprising. Whilst it's a bit faster at "repeatable read" level, it takes about 5 times longer at the serializable level. The difference is less pronounced for the "single row update" test which is interesting. I think what might be happening there is that by updating different rows in different transactions (rather than the same row in all transactions), we might be triggering checks protecting against dependencies between transactions (which is one of the features of the serializable level).

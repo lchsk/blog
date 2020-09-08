@@ -21,7 +21,8 @@ Summary:
 
 The theme this time was 'Keep it alive'. I have decided to consider it literally and create a survival game. The main character is being attacked by an endless wave of enemies. The player must keep him alive as long as possible (although he will eventually succumb as there's no actual way of winning).
 
-![Alive game screenshot](./data/projects/alive_game_1.png)
+<a href="./data/projects/alive_game_1.png"><img src="./data/projects/alive_game_1.png" alt="Alive game screenshot"/></a>
+
 *A screenshot of the complete game*
 
 The player controls his character by using the mouse and the keyboard. The character's movement is a bit quirky as he moves in relation to where the mouse is pointing to. For example, pressing 'W' key moves the player 'forward', i.e. towards the mouse cursor. The player can also use one of three weapons to attack his enemies.
@@ -32,7 +33,8 @@ The game, like the engine, is written in C. I've found C to be, perhaps counteri
 
 The game can also be compiled with Emscripten and played as a game in a web browser.
 
-![Alive game screenshot](./data/projects/alive_game_2.png)
+<a href="./data/projects/alive_game_2.png"><img src="./data/projects/alive_game_2.png" alt="Alive game screenshot"/></a>
+
 *A screenshot of the complete game with the welcome screen*
 
 ## Game engine

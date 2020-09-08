@@ -7,13 +7,13 @@ keywords: c, list, emacs lips, elisp, terminal, application launcher, xstarter, 
 
 I spent a lot of time in Emacs so I'm always looking for something new to add to my workflow. I typically start applications using [**xstarter**](https://github.com/lchsk/xstarter), a command line tool written in C that uses an [ncurses](https://www.gnu.org/software/ncurses/) interface. It allows me to quickly search an open programs I need. One of its useful features is recording applications that were recently opened and showing them on the screen so that they can be accessed quickly. Most of the time, I use it via [`xmonad` window manager](https://xmonad.org/) where it's configured to launch with a [key shortcut](https://github.com/lchsk/dotfiles/blob/master/xmonad.hs#L133).
 
-![List of recently opened applications in terminal](data/xstarter_2.png)
+<a href="./data/xstarter_2.png"><img src="./data/xstarter_2.png" alt="List of recently opened applications in terminal"/></a>
 
 *List of recently opened applications in terminal*
 
 However, I also wanted to have access to that tool via Emacs so that I can use it even if I'm not running `xmonad`. I wrote a small [**Emacs Lisp** package](https://github.com/lchsk/helm-xstarter) that offers an interface for **xstarter**. It uses [Helm](https://github.com/emacs-helm/helm), a great framework for building convenient search interfaces that many Emacs users are familiar with.
 
-![Emacs interface for `xstarter`](data/helm_xstarter.png)
+<a href="./data/helm_xstarter.png"><img src="./data/helm_xstarter.png" alt="Emacs interface for xstarter"/></a>
 
 *Emacs interface for `xstarter`*
 

@@ -54,13 +54,13 @@
           <p class="blog-post-meta">2018-08-27</p>
           <p>I spent a lot of time in Emacs so I&rsquo;m always looking for something new to add to my workflow. I typically start applications using <a href="https://github.com/lchsk/xstarter"><strong>xstarter</strong></a>, a command line tool written in C that uses an <a href="https://www.gnu.org/software/ncurses/">ncurses</a> interface. It allows me to quickly search an open programs I need. One of its useful features is recording applications that were recently opened and showing them on the screen so that they can be accessed quickly. Most of the time, I use it via <a href="https://xmonad.org/"><code>xmonad</code> window manager</a> where it&rsquo;s configured to launch with a <a href="https://github.com/lchsk/dotfiles/blob/master/xmonad.hs#L133">key shortcut</a>.</p>
 
-<p><img src="data/xstarter_2.png" alt="List of recently opened applications in terminal" /></p>
+<p><a href="./data/xstarter_2.png"><img src="./data/xstarter_2.png" alt="List of recently opened applications in terminal"/></a></p>
 
 <p><em>List of recently opened applications in terminal</em></p>
 
 <p>However, I also wanted to have access to that tool via Emacs so that I can use it even if I&rsquo;m not running <code>xmonad</code>. I wrote a small <a href="https://github.com/lchsk/helm-xstarter"><strong>Emacs Lisp</strong> package</a> that offers an interface for <strong>xstarter</strong>. It uses <a href="https://github.com/emacs-helm/helm">Helm</a>, a great framework for building convenient search interfaces that many Emacs users are familiar with.</p>
 
-<p><img src="data/helm_xstarter.png" alt="Emacs interface for `xstarter`" /></p>
+<p><a href="./data/helm_xstarter.png"><img src="./data/helm_xstarter.png" alt="Emacs interface for xstarter"/></a></p>
 
 <p><em>Emacs interface for <code>xstarter</code></em></p>
 

@@ -50,7 +50,7 @@ You need to test your code and then run:
 
 Git will narrow down the range of suspicious revisions and you'll get to test it again. After a few iterations of this process, git should identify the commit that had introduced the bug:
 
-![Bad commit identified with git bisect](data/git_bisect_bad_commit.png)
+<a href="./data/git_bisect_bad_commit.png"><img src="./data/git_bisect_bad_commit.png" alt="Bad commit identified with git bisect"/></a>
 
 *Bad commit identified with git bisect*
 
@@ -60,7 +60,7 @@ Having confirmed the bug originated in that commit, you can finish the process b
 
 We can also take a look at `git log` to see which commits we have looked at:
 
-![Revisions tested with git bisect](data/git_bisect_log.png)
+<a href="./data/git_bisect_log.png"><img src="./data/git_bisect_log.png" alt="Revisions tested with git bisect"/></a>
 
 *Revisions tested with `git bisect`*
 
