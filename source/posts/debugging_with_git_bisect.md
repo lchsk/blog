@@ -22,7 +22,9 @@ You start by moving to the root of the repository.
 
 Then, you initialise by running 
 
-`$ git bisect start`
+```bash
+git bisect start
+```
 
 After that, we need to provide two commit hashes:
 
@@ -32,21 +34,25 @@ After that, we need to provide two commit hashes:
 
 In my case, it was:
 
-`$ git bisect bad 0c898b0`
+```bash
+git bisect bad 0c898b0
+```
 
 and 
 
-`$ git bisect good a54d699`
+```bash
+git bisect good a54d699
+```
 
 Git will check out version at the commit between `good` and `bad` and inform you how many iterations are expected:
 
-`Bisecting: 5 revisions left to test after this (roughly 3 steps)`.
+`Bisecting: 5 revisions left to test after this (roughly 3 steps)`
 
 You need to test your code and then run:
 
-`$ git bisect good` if the bug is gone, or
+- `git bisect good` if the bug is gone, or
 
-`$ git bisect bad` if the bug is still there.
+- `git bisect bad` if the bug is still there.
 
 Git will narrow down the range of suspicious revisions and you'll get to test it again. After a few iterations of this process, git should identify the commit that had introduced the bug:
 
@@ -56,7 +62,9 @@ Git will narrow down the range of suspicious revisions and you'll get to test it
 
 Having confirmed the bug originated in that commit, you can finish the process by 
 
-`$ git bisect reset`.
+```bash
+git bisect reset
+```
 
 We can also take a look at `git log` to see which commits we have looked at:
 

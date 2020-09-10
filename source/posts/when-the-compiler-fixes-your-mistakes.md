@@ -11,7 +11,7 @@ I have been working on a new feature for my [terminal-based application launcher
 
 Whilst preparing to make changes, I have noticed this piece of code [I had written some time ago](https://github.com/lchsk/xstarter/blob/v0.7.0/src/utils.c#L46).
 
-```
+```c
     char path_cpy[1024];
     strcpy(path_cpy, path);
 
@@ -32,7 +32,7 @@ I have removed the code changes I've made when testing but that did not help. Cl
 
 I remembered I've built the program for debugging. I've checked what compiler flags I'm passing in that case. Debugging version was not using any optimisation flags and the release one had `-O3` in the build configuration. In a debugging version I had a few warnings that I haven't fixed. Some of them looked particularly gravely:
 
-```
+```c
 /home/lchsk/git/xstarter/src/utils.c:103:21:
 warning: passing argument 1 of strncpy 
 from incompatible pointer type 
@@ -51,11 +51,15 @@ It looked bad and pointed to a reason why the debugging version was not working.
 
 Later, I fixed the code that the compiler was complaining about when `-O0` flag was on. Essentially, I've changed the definition using arrays 
 
-`char (*args[args_cnt])[STR_SIZE];` 
+```c
+char (*args[args_cnt])[STR_SIZE];
+```
 
 to 
 
-`char **args = smalloc(args_cnt * sizeof(char*));` 
+```c
+char **args = smalloc(args_cnt * sizeof(char*));
+```
 
 in order to avoid passing arrays and instead using pointers directly.
 

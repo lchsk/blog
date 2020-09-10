@@ -68,7 +68,8 @@
 
 <p>Then, you initialise by running</p>
 
-<p><code>$ git bisect start</code></p>
+<div class="highlight"><pre><span></span>git bisect start
+</pre></div>
 
 <p>After that, we need to provide two commit hashes:</p>
 
@@ -80,21 +81,25 @@
 
 <p>In my case, it was:</p>
 
-<p><code>$ git bisect bad 0c898b0</code></p>
+<div class="highlight"><pre><span></span>git bisect bad 0c898b0
+</pre></div>
 
 <p>and</p>
 
-<p><code>$ git bisect good a54d699</code></p>
+<div class="highlight"><pre><span></span>git bisect good a54d699
+</pre></div>
 
 <p>Git will check out version at the commit between <code>good</code> and <code>bad</code> and inform you how many iterations are expected:</p>
 
-<p><code>Bisecting: 5 revisions left to test after this (roughly 3 steps)</code>.</p>
+<p><code>Bisecting: 5 revisions left to test after this (roughly 3 steps)</code></p>
 
 <p>You need to test your code and then run:</p>
 
-<p><code>$ git bisect good</code> if the bug is gone, or</p>
+<ul>
+<li><p><code>git bisect good</code> if the bug is gone, or</p></li>
 
-<p><code>$ git bisect bad</code> if the bug is still there.</p>
+<li><p><code>git bisect bad</code> if the bug is still there.</p></li>
+</ul>
 
 <p>Git will narrow down the range of suspicious revisions and you&rsquo;ll get to test it again. After a few iterations of this process, git should identify the commit that had introduced the bug:</p>
 
@@ -104,7 +109,8 @@
 
 <p>Having confirmed the bug originated in that commit, you can finish the process by</p>
 
-<p><code>$ git bisect reset</code>.</p>
+<div class="highlight"><pre><span></span>git bisect reset
+</pre></div>
 
 <p>We can also take a look at <code>git log</code> to see which commits we have looked at:</p>
 

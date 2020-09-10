@@ -19,7 +19,7 @@ However, I also wanted to have access to that tool via Emacs so that I can use i
 
 In order to make it work, I had to add two additional features to `xstarter` itself. Firstly, it needs to return a list of applications it has stored in cache. It's printed to the standard output; in order to get it, the Lisp package simply runs `xstarter -P` as a shell command and collects the output as a string. Secondly, I've added `xstarter -e` option which can launch any application in a separate process (so if it's run from a terminal, it's detached from it). The ELisp package uses that command to launch an application selected by a user in the Emacs interface:
 
-```
+```lisp
 (defun helm-xstarter-open (arg)
   (shell-command (concat "xstarter -e" arg)))
 ```

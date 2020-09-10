@@ -66,9 +66,9 @@
 
 <p>In order to make it work, I had to add two additional features to <code>xstarter</code> itself. Firstly, it needs to return a list of applications it has stored in cache. It&rsquo;s printed to the standard output; in order to get it, the Lisp package simply runs <code>xstarter -P</code> as a shell command and collects the output as a string. Secondly, I&rsquo;ve added <code>xstarter -e</code> option which can launch any application in a separate process (so if it&rsquo;s run from a terminal, it&rsquo;s detached from it). The ELisp package uses that command to launch an application selected by a user in the Emacs interface:</p>
 
-<pre><code>(defun helm-xstarter-open (arg)
-  (shell-command (concat &quot;xstarter -e&quot; arg)))
-</code></pre>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="nb">defun</span> <span class="nv">helm-xstarter-open</span> <span class="p">(</span><span class="nv">arg</span><span class="p">)</span>
+  <span class="p">(</span><span class="nv">shell-command</span> <span class="p">(</span><span class="nv">concat</span> <span class="s">&quot;xstarter -e&quot;</span> <span class="nv">arg</span><span class="p">)))</span>
+</pre></div>
 
 <p>It&rsquo;s surprisingly short at just over <a href="https://github.com/lchsk/helm-xstarter/blob/master/helm-xstarter.el">20 lines of code</a>!</p>
 

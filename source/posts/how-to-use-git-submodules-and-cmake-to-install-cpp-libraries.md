@@ -29,13 +29,13 @@ Now, we need to tell CMake where to find the library files.
 
 Inside the `CMakeLists.txt` file define a variable, `EXTERNAL_LIB_HEADERS`, that lists external dependencies.
 
-```
+```cmake
 set(EXTERNAL_LIB_HEADERS lib/toml11)
 ```
 
 Now, add `EXTERNAL_LIB_HEADERS` to the list of directories where C++ compiler should be looking for header files.
 
-```
+```cmake
 target_include_directories(
   executable_name PRIVATE
   ${EXTERNAL_LIB_HEADERS}
@@ -44,7 +44,7 @@ target_include_directories(
 
 At that point, it should be ready to use. You can test it by including the header of the library and compiling your program.
 
-```
+```cpp
 #include <toml.hpp>
 ```
 

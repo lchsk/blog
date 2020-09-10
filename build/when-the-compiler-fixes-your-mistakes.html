@@ -58,11 +58,11 @@
 
 <p>Whilst preparing to make changes, I have noticed this piece of code <a href="https://github.com/lchsk/xstarter/blob/v0.7.0/src/utils.c#L46">I had written some time ago</a>.</p>
 
-<pre><code>    char path_cpy[1024];
-    strcpy(path_cpy, path);
+<div class="highlight"><pre><span></span>    <span class="kt">char</span> <span class="n">path_cpy</span><span class="p">[</span><span class="mi">1024</span><span class="p">];</span>
+    <span class="n">strcpy</span><span class="p">(</span><span class="n">path_cpy</span><span class="p">,</span> <span class="n">path</span><span class="p">);</span>
 
-    record_open_file(path_cpy);
-</code></pre>
+    <span class="n">record_open_file</span><span class="p">(</span><span class="n">path_cpy</span><span class="p">);</span>
+</pre></div>
 
 <p>Forgive the use of <code>strcpy</code> and a magic number; the problem was that I didn&rsquo;t remember why I was creating a copy of <code>path</code> and passing it into <code>record_open_file()</code>. Sadly, there was no comment. I&rsquo;ve quickly changed the call to just <code>record_open_file(path);</code> and later used <code>path</code> instead of <code>path_cpy</code>. And that&rsquo;s where strange things began to happen.</p>
 
@@ -78,29 +78,31 @@
 
 <p>I remembered I&rsquo;ve built the program for debugging. I&rsquo;ve checked what compiler flags I&rsquo;m passing in that case. Debugging version was not using any optimisation flags and the release one had <code>-O3</code> in the build configuration. In a debugging version I had a few warnings that I haven&rsquo;t fixed. Some of them looked particularly gravely:</p>
 
-<pre><code>/home/lchsk/git/xstarter/src/utils.c:103:21:
-warning: passing argument 1 of strncpy 
-from incompatible pointer type 
-[-Wincompatible-pointer-types]
-             strncpy(args[0], path_cpy, STR_SIZE);
-                     ^~~~
-In file included from /home/lchsk/git/xstarter/src/utils.c:7:0:
-/usr/include/string.h:124:14:
-note: expected char * restrict 
-but argument is of type char (*)[(sizetype)STR_SIZE]
-extern char *strncpy (char *__restrict __dest,
-              ^~~~~~~
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">lchsk</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">xstarter</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">utils</span><span class="p">.</span><span class="nl">c</span><span class="p">:</span><span class="mi">103</span><span class="o">:</span><span class="mi">21</span><span class="o">:</span>
+<span class="nl">warning</span><span class="p">:</span> <span class="n">passing</span> <span class="n">argument</span> <span class="mi">1</span> <span class="n">of</span> <span class="n">strncpy</span> 
+<span class="n">from</span> <span class="n">incompatible</span> <span class="n">pointer</span> <span class="n">type</span> 
+<span class="p">[</span><span class="o">-</span><span class="n">Wincompatible</span><span class="o">-</span><span class="n">pointer</span><span class="o">-</span><span class="n">types</span><span class="p">]</span>
+             <span class="n">strncpy</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">path_cpy</span><span class="p">,</span> <span class="n">STR_SIZE</span><span class="p">);</span>
+                     <span class="o">^~~~</span>
+<span class="n">In</span> <span class="n">file</span> <span class="n">included</span> <span class="n">from</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">lchsk</span><span class="o">/</span><span class="n">git</span><span class="o">/</span><span class="n">xstarter</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">utils</span><span class="p">.</span><span class="nl">c</span><span class="p">:</span><span class="mi">7</span><span class="o">:</span><span class="mi">0</span><span class="o">:</span>
+<span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">string</span><span class="p">.</span><span class="nl">h</span><span class="p">:</span><span class="mi">124</span><span class="o">:</span><span class="mi">14</span><span class="o">:</span>
+<span class="nl">note</span><span class="p">:</span> <span class="n">expected</span> <span class="kt">char</span> <span class="o">*</span> <span class="kr">restrict</span> 
+<span class="n">but</span> <span class="n">argument</span> <span class="n">is</span> <span class="n">of</span> <span class="n">type</span> <span class="kt">char</span> <span class="p">(</span><span class="o">*</span><span class="p">)[(</span><span class="n">sizetype</span><span class="p">)</span><span class="n">STR_SIZE</span><span class="p">]</span>
+<span class="k">extern</span> <span class="kt">char</span> <span class="o">*</span><span class="n">strncpy</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">__restrict</span> <span class="n">__dest</span><span class="p">,</span>
+              <span class="o">^~~~~~~</span>
+</pre></div>
 
 <p>It looked bad and pointed to a reason why the debugging version was not working. But why the release build was fine? Well, the release configuration was using the optimisation flag (<code>-O3</code>) and the compiler was able to fix the bug while applying optimisations, so the code was working as expected and the warning above was now showing up. All of that thanks to the compiler which was able to figure out what the intention of the code was (even with just <code>-O1</code> flag).</p>
 
 <p>Later, I fixed the code that the compiler was complaining about when <code>-O0</code> flag was on. Essentially, I&rsquo;ve changed the definition using arrays</p>
 
-<p><code>char (*args[args_cnt])[STR_SIZE];</code></p>
+<div class="highlight"><pre><span></span><span class="kt">char</span> <span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">[</span><span class="n">args_cnt</span><span class="p">])[</span><span class="n">STR_SIZE</span><span class="p">];</span>
+</pre></div>
 
 <p>to</p>
 
-<p><code>char **args = smalloc(args_cnt * sizeof(char*));</code></p>
+<div class="highlight"><pre><span></span><span class="kt">char</span> <span class="o">**</span><span class="n">args</span> <span class="o">=</span> <span class="n">smalloc</span><span class="p">(</span><span class="n">args_cnt</span> <span class="o">*</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="o">*</span><span class="p">));</span>
+</pre></div>
 
 <p>in order to avoid passing arrays and instead using pointers directly.</p>
 

@@ -18,7 +18,7 @@ I'm working on a [C++ desktop client for Postgres](https://lchsk.com/sanchosql).
 
 `.travis.yml` config file becomes very simple in this case as it only builds the image:
 
-```
+```yaml
 language: cpp
 sudo: false
 
@@ -32,13 +32,13 @@ jobs:
 
 `Dockerfile` is located in the `ci/` directory - it's currently designed to work with recent stable version of Ubuntu - 18.04. 
 
-```
+```dockerfile
 FROM ubuntu:18.04
 ```
 
 Libraries are easily installed with Ubuntu's package manager:
 
-```
+```dockerfile
 RUN apt-get update && apt-get install -y \
     pkg-config \
     git \
@@ -52,7 +52,7 @@ RUN apt-get update && apt-get install -y \
 
 Minor complication is that we need to get the `GoogleTest` library by installing it from source:
 
-```
+```dockerfile
 RUN git clone https://github.com/google/googletest.git /googletest \
     && mkdir -p /googletest/build \
     && cd /googletest/build \
@@ -62,13 +62,13 @@ RUN git clone https://github.com/google/googletest.git /googletest \
 
 Afterwards, we just need to clone the project:
 
-```
+```dockerfile
 RUN git clone https://github.com/lchsk/sanchosql.git /sanchosql
 ```
 
 Then, we're ready to build the application and tests:
 
-```
+```dockerfile
 RUN echo "Building the application" \
     && cd /sanchosql \
     && mkdir build \
@@ -86,7 +86,7 @@ RUN echo "Building tests" \
 
 If they are built successfully, the last step is simply running the tests:
 
-```
+```dockerfile
 RUN echo "Running tests" \
     && cd /sanchosql/tests/build \
     && ctest
@@ -94,7 +94,7 @@ RUN echo "Running tests" \
 
 This solution can also be easily tested locally.
 
-```
+```bash
 cd ci
 docker build -t sancho_ubuntu1804 -f Dockerfile.ubuntu1804 ./
 ```
@@ -103,13 +103,13 @@ This will build the application and run tests.
 
 We can then run
 
-```
+```bash
 docker run --rm -P -it --name sancho_build sancho_ubuntu180
 ```
 
 to open shell and manually check if things look right inside the container by navigating to the application's directory:
 
-```
+```bash
 cd /sanchosql
 ```
 

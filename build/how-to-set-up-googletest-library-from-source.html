@@ -62,76 +62,76 @@
 
 <p>Download latest release from <a href="https://github.com/google/googletest/releases">https://github.com/google/googletest/releases</a></p>
 
-<pre><code>wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
-</code></pre>
+<div class="highlight"><pre><span></span>wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
+</pre></div>
 
 <p>and extract it</p>
 
-<pre><code>tar xzf release-1.8.0.tar.gz
-cd googletest-release-1.8.0
-</code></pre>
+<div class="highlight"><pre><span></span>tar xzf release-1.8.0.tar.gz
+<span class="nb">cd</span> googletest-release-1.8.0
+</pre></div>
 
 <p>After than, we can compile it:</p>
 
-<pre><code>mkdir build &amp;&amp; cd build
+<div class="highlight"><pre><span></span>mkdir build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
 cmake ..
 make -j
-</code></pre>
+</pre></div>
 
 <p>Now, copy the headers to a directory where compilers can find them:</p>
 
-<pre><code>sudo cp -r ../googletest/include /usr/local/include
-</code></pre>
+<div class="highlight"><pre><span></span>sudo cp -r ../googletest/include /usr/local/include
+</pre></div>
 
 <p>Then, copy static libraries:</p>
 
-<pre><code>sudo cp -r ./googlemock/gtest/libgtest*.a /usr/local/lib/
-</code></pre>
+<div class="highlight"><pre><span></span>sudo cp -r ./googlemock/gtest/libgtest*.a /usr/local/lib/
+</pre></div>
 
 <p>Additionally, you can also add googlemock library (mocking framework):</p>
 
-<pre><code>sudo cp -r ./googlemock/libgmock*.a /usr/local/lib/
-</code></pre>
+<div class="highlight"><pre><span></span>sudo cp -r ./googlemock/libgmock*.a /usr/local/lib/
+</pre></div>
 
 <h2>Find googletest with <code>pkg-config</code></h2>
 
 <p>After compiling and installing library files, try to find the library with <code>pkg-config</code>:</p>
 
-<pre><code>pkg-config --libs --cflags gtest
-</code></pre>
+<div class="highlight"><pre><span></span>pkg-config --libs --cflags gtest
+</pre></div>
 
 <p>If you get a message about gtest not being found (&ldquo;Package gtest was not found in the pkg-config search path&rdquo;) then it essentially means <code>pkg-config</code> cannot find gtest&rsquo;s <code>.pc</code> file which provides configuration.</p>
 
 <p>It can be added in any of the directories listed by</p>
 
-<pre><code>pkg-config --variable pc_path pkg-config
-</code></pre>
+<div class="highlight"><pre><span></span>pkg-config --variable pc_path pkg-config
+</pre></div>
 
 <p>e.g. <code>/usr/lib/pkgconfig</code></p>
 
 <p>Create a file named <code>gtest.pc</code> which should like similar to this:</p>
 
-<pre><code>prefix=/usr/local
-exec_prefix=${prefix}
-libdir=${prefix}/lib
-includedir=${prefix}/include
+<div class="highlight"><pre><span></span><span class="nv">prefix</span><span class="o">=</span>/usr/local
+<span class="nv">exec_prefix</span><span class="o">=</span><span class="si">${</span><span class="nv">prefix</span><span class="si">}</span>
+<span class="nv">libdir</span><span class="o">=</span><span class="si">${</span><span class="nv">prefix</span><span class="si">}</span>/lib
+<span class="nv">includedir</span><span class="o">=</span><span class="si">${</span><span class="nv">prefix</span><span class="si">}</span>/include
 
 Name: gtest
 Description: gtest
-Version: 1.8.0
-Libs: -L${libdir} -lgtest -lpthread
-Cflags: -I${includedir}
-</code></pre>
+Version: <span class="m">1</span>.8.0
+Libs: -L<span class="si">${</span><span class="nv">libdir</span><span class="si">}</span> -lgtest -lpthread
+Cflags: -I<span class="si">${</span><span class="nv">includedir</span><span class="si">}</span>
+</pre></div>
 
 <p>After that, verify that</p>
 
-<pre><code>pkg-config  --libs --cflags gtest
-</code></pre>
+<div class="highlight"><pre><span></span>pkg-config  --libs --cflags gtest
+</pre></div>
 
 <p>produces valid output, i.e. similar to</p>
 
-<pre><code>-I/usr/local/include -L/usr/local/lib -lgtest -lpthread
-</code></pre>
+<div class="highlight"><pre><span></span>-I/usr/local/include -L/usr/local/lib -lgtest -lpthread
+</pre></div>
 
 <h2>Integrating googletest with cmake</h2>
 
@@ -139,32 +139,32 @@ Cflags: -I${includedir}
 
 <p>First, in order to add support for <code>pkg-config</code> in cmake add the following in <code>CMakeLists.txt</code>:</p>
 
-<pre><code>find_package(PkgConfig)
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">PkgConfig</span><span class="p">)</span>
+</pre></div>
 
 <p>Then, find gtest with <code>pkg-config</code>:</p>
 
-<pre><code>pkg_check_modules(GTEST &quot;gtest&quot; REQUIRED)
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">GTEST</span> <span class="s2">&quot;gtest&quot;</span> <span class="s">REQUIRED</span><span class="p">)</span>
+</pre></div>
 
 <p>You can verify that it&rsquo;s available by printing <code>GTEST_FOUND</code> variable</p>
 
-<pre><code>message(STATUS &quot;gtest found: &quot; ${GTEST_FOUND})
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nb">message</span><span class="p">(</span><span class="s">STATUS</span> <span class="s2">&quot;gtest found: &quot;</span> <span class="o">${</span><span class="nv">GTEST_FOUND</span><span class="o">}</span><span class="p">)</span>
+</pre></div>
 
 <p>and running <code>cmake .</code> on your project.</p>
 
 <p>After you confirm cmake can find the library, just add a definition for your test executable, e.g.</p>
 
-<pre><code>add_executable(test_1
-  tests/test_1.cpp
-)
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nb">add_executable</span><span class="p">(</span><span class="s">test_1</span>
+  <span class="s">tests/test_1.cpp</span>
+<span class="p">)</span>
+</pre></div>
 
 <p>and then link gtest with it:</p>
 
-<pre><code>target_link_libraries(test_1 ${GTEST_LIBRARIES})
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">test_1</span> <span class="o">${</span><span class="nv">GTEST_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
+</pre></div>
 
 <p>Running build command e.g. <code>cmake . &amp;&amp; make</code> should now successfully build the executable.</p>
 
@@ -176,27 +176,27 @@ Cflags: -I${includedir}
 
 <p>Create <code>gmock.pc</code> configuration file in <code>/usr/lib/pkgconfig</code> so that <code>pkg-config</code> can resolve compiler flags:</p>
 
-<pre><code>prefix=/usr/local
-exec_prefix=${prefix}
-libdir=${prefix}/lib
-includedir=${prefix}/include
+<div class="highlight"><pre><span></span><span class="nv">prefix</span><span class="o">=</span>/usr/local
+<span class="nv">exec_prefix</span><span class="o">=</span><span class="si">${</span><span class="nv">prefix</span><span class="si">}</span>
+<span class="nv">libdir</span><span class="o">=</span><span class="si">${</span><span class="nv">prefix</span><span class="si">}</span>/lib
+<span class="nv">includedir</span><span class="o">=</span><span class="si">${</span><span class="nv">prefix</span><span class="si">}</span>/include
 
 Name: gmock
 Description: gmock
-Version: 1.8.0
-Libs: -L${libdir} -lgmock -lpthread
-Cflags: -I${includedir}
-</code></pre>
+Version: <span class="m">1</span>.8.0
+Libs: -L<span class="si">${</span><span class="nv">libdir</span><span class="si">}</span> -lgmock -lpthread
+Cflags: -I<span class="si">${</span><span class="nv">includedir</span><span class="si">}</span>
+</pre></div>
 
 <p>Then, find gmock in <code>CMakeLists.txt</code>:</p>
 
-<pre><code>pkg_check_modules(GMOCK &quot;gmock&quot; REQUIRED)
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nb">pkg_check_modules</span><span class="p">(</span><span class="s">GMOCK</span> <span class="s2">&quot;gmock&quot;</span> <span class="s">REQUIRED</span><span class="p">)</span>
+</pre></div>
 
 <p>Finally, link your tests with googlemock by adding <code>${GMOCK_LIBRARIES}</code> variable:</p>
 
-<pre><code>target_link_libraries(test_readdir ${GTEST_LIBRARIES} ${GMOCK_LIBRARIES})
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nb">target_link_libraries</span><span class="p">(</span><span class="s">test_readdir</span> <span class="o">${</span><span class="nv">GTEST_LIBRARIES</span><span class="o">}</span> <span class="o">${</span><span class="nv">GMOCK_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
+</pre></div>
 
 <p>After all those steps, tests using googletest/googlemock should compile correctly by executing standard commands (<code>cmake . &amp;&amp; make</code>)!</p>
 

@@ -64,90 +64,90 @@
 
 <p><code>.travis.yml</code> config file becomes very simple in this case as it only builds the image:</p>
 
-<pre><code>language: cpp
-sudo: false
+<div class="highlight"><pre><span></span><span class="nt">language</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">cpp</span>
+<span class="nt">sudo</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 
-jobs:
-  include:
-    - stage: ubuntu1804
-      script:
-        - cd ci
-        - docker build -t sancho_ubuntu1804 -f Dockerfile.ubuntu1804 ./
-</code></pre>
+<span class="nt">jobs</span><span class="p">:</span>
+  <span class="nt">include</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">stage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu1804</span>
+      <span class="nt">script</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">cd ci</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">docker build -t sancho_ubuntu1804 -f Dockerfile.ubuntu1804 ./</span>
+</pre></div>
 
 <p><code>Dockerfile</code> is located in the <code>ci/</code> directory - it&rsquo;s currently designed to work with recent stable version of Ubuntu - 18.04.</p>
 
-<pre><code>FROM ubuntu:18.04
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="s">ubuntu:18.04</span>
+</pre></div>
 
 <p>Libraries are easily installed with Ubuntu&rsquo;s package manager:</p>
 
-<pre><code>RUN apt-get update &amp;&amp; apt-get install -y \
-    pkg-config \
-    git \
-    g++ \
-    cmake \
-    libxml2-utils \
-    libgtkmm-3.0-dev \
-    libgtksourceviewmm-3.0-dev \
+<div class="highlight"><pre><span></span><span class="k">RUN</span> apt-get update <span class="o">&amp;&amp;</span> apt-get install -y <span class="se">\</span>
+    pkg-config <span class="se">\</span>
+    git <span class="se">\</span>
+    g++ <span class="se">\</span>
+    cmake <span class="se">\</span>
+    libxml2-utils <span class="se">\</span>
+    libgtkmm-3.0-dev <span class="se">\</span>
+    libgtksourceviewmm-3.0-dev <span class="se">\</span>
     libpqxx-dev
-</code></pre>
+</pre></div>
 
 <p>Minor complication is that we need to get the <code>GoogleTest</code> library by installing it from source:</p>
 
-<pre><code>RUN git clone https://github.com/google/googletest.git /googletest \
-    &amp;&amp; mkdir -p /googletest/build \
-    &amp;&amp; cd /googletest/build \
-    &amp;&amp; cmake .. &amp;&amp; make &amp;&amp; make install \
-    &amp;&amp; cd / &amp;&amp; rm -rf /googletest
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">RUN</span> git clone https://github.com/google/googletest.git /googletest <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> mkdir -p /googletest/build <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /googletest/build <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> cmake .. <span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> make install <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> <span class="nb">cd</span> / <span class="o">&amp;&amp;</span> rm -rf /googletest
+</pre></div>
 
 <p>Afterwards, we just need to clone the project:</p>
 
-<pre><code>RUN git clone https://github.com/lchsk/sanchosql.git /sanchosql
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">RUN</span> git clone https://github.com/lchsk/sanchosql.git /sanchosql
+</pre></div>
 
 <p>Then, we&rsquo;re ready to build the application and tests:</p>
 
-<pre><code>RUN echo &quot;Building the application&quot; \
-    &amp;&amp; cd /sanchosql \
-    &amp;&amp; mkdir build \
-    &amp;&amp; cd build \
-    &amp;&amp; cmake .. \
-    &amp;&amp; make -j
+<div class="highlight"><pre><span></span><span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;Building the application&quot;</span> <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /sanchosql <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> mkdir build <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> cmake .. <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> make -j
 
-RUN echo &quot;Building tests&quot; \
-    &amp;&amp; cd /sanchosql/tests \
-    &amp;&amp; mkdir build \
-    &amp;&amp; cd build \
-    &amp;&amp; cmake .. \
-    &amp;&amp; make -j
-</code></pre>
+<span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;Building tests&quot;</span> <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /sanchosql/tests <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> mkdir build <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> cmake .. <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> make -j
+</pre></div>
 
 <p>If they are built successfully, the last step is simply running the tests:</p>
 
-<pre><code>RUN echo &quot;Running tests&quot; \
-    &amp;&amp; cd /sanchosql/tests/build \
-    &amp;&amp; ctest
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">RUN</span> <span class="nb">echo</span> <span class="s2">&quot;Running tests&quot;</span> <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> <span class="nb">cd</span> /sanchosql/tests/build <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> ctest
+</pre></div>
 
 <p>This solution can also be easily tested locally.</p>
 
-<pre><code>cd ci
+<div class="highlight"><pre><span></span><span class="nb">cd</span> ci
 docker build -t sancho_ubuntu1804 -f Dockerfile.ubuntu1804 ./
-</code></pre>
+</pre></div>
 
 <p>This will build the application and run tests.</p>
 
 <p>We can then run</p>
 
-<pre><code>docker run --rm -P -it --name sancho_build sancho_ubuntu180
-</code></pre>
+<div class="highlight"><pre><span></span>docker run --rm -P -it --name sancho_build sancho_ubuntu180
+</pre></div>
 
 <p>to open shell and manually check if things look right inside the container by navigating to the application&rsquo;s directory:</p>
 
-<pre><code>cd /sanchosql
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> /sanchosql
+</pre></div>
 
 <p>This solution is easily adaptable to various use cases and can be extended to more complex applications.</p>
 
