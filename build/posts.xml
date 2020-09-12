@@ -4,7 +4,7 @@
     <link>https://lchsk.com</link>
     <description>Home page of Maciej Lechowski; blog, open source projects; c++, python, go, emacs, linux</description>
     <managingEditor> (Maciej Lechowski)</managingEditor>
-    <pubDate>Sat, 12 Sep 2020 13:02:53 +0100</pubDate>
+    <pubDate>Sat, 12 Sep 2020 13:11:10 +0100</pubDate>
     <item>
       <title>Benchmarking concurrent operations in PostgreSQL</title>
       <link>https://lchsk.com/benchmarking-concurrent-operations-in-postgresql.html</link>

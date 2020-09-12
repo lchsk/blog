@@ -174,3 +174,15 @@ target_link_libraries(test_readdir ${GTEST_LIBRARIES} ${GMOCK_LIBRARIES})
 ```
 
 After all those steps, tests using googletest/googlemock should compile correctly by executing standard commands (`cmake . && make`)!
+
+### Related posts
+
+- {{@how-to-use-git-submodules-and-cmake-to-install-c-libraries}}
+
+- {{@setting-up-ci-for-cpp-application-with-docker}}
+
+- {{@when-the-compiler-fixes-your-mistakes}}
+
+- {{@building-a-video-game-in-c-for-a-weekend-game-jam}}
+
+- {{@making-a-turn-based-strategy-game-in-cpp-in-72-hours}}

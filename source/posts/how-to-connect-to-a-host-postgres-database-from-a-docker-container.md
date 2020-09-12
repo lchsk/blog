@@ -73,3 +73,13 @@ docker run -dt --rm --add-host=host:<ip> --name container_name -p 8000:8000 imag
 ```
 
 Those changes should be enough to make a Postgres database running on a host system work with a containerized app.
+
+### Related posts
+
+- {{@database-transactions-concurrency-isolation-levels-and-postgresql}}
+
+- {{@benchmarking-concurrent-operations-in-postgresql}}
+
+- {{@building-a-postgres-gui-client-with-c-and-gtk-sanchosql}}
+
+- {{@stay-paranoid-and-trust-no-one-overview-of-common-security-vulnerabilities-in-web-applications}}
