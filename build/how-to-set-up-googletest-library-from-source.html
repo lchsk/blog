@@ -1,10 +1,10 @@
 <!DOCTYPE html>
   <head>
     <meta charset="UTF-8">
-    <meta name="description" content="The following guide provides instructions on how to compile and add googletest to a C++ project. It will use pkg-config to obtain compiler flags and can be used with a build system such as cmake.">
-    <meta name="keywords" content="googletest, c++, compilation, unit testing, library, pkg-config, linux, cmake, mocking, tests">
+    <meta name="description" content="The following guide provides instructions on how to compile and add googletest (gtest) to a C++ project. See how to compile and install googletest and googlemock. Use pkg-config to obtain compiler flags. Then set up the libraries to build your cmake project.">
+    <meta name="keywords" content="googletest, c++, compilation, unit testing, gtest, googletest installation, googlemock, library, pkg-config, linux, cmake, mocking, tests, how to install gtest, gtest build, build googletest, how to build googletest, gtest installation">
     <meta name="author" content="Maciej Lechowski">
-    <title>How to set up googletest library from source?</title>
+    <title>How to install googletest library?</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="static/styles2.css">
     <link rel="alternate" type="application/rss+xml" href="posts.xml" />
@@ -50,28 +50,28 @@
     <div class="row">
       <div class="col-md-8 blog-main">
         <div class="blog-post">
-          <h2>How to set up googletest library from source?</h2>
+          <h2>How to install googletest library?</h2>
           <p class="blog-post-meta">2018-05-18</p>
-          <p>I&rsquo;ve noticed that setting up googletest (C++ unit testing library) can be tricky. When starting a new project, I had problems integrating googletest despite having no such problems with other libraries.</p>
+          <p>Setting up googletest (or gtest, C++ unit testing library) can be tricky. When starting a new project, integrating googletest can be problematic, despite having no such issues with other libraries.</p>
 
-<p>The following guide provides instructions on how to compile and add googletest to a C++ project. It will use <code>pkg-config</code> to obtain compiler flags and can be used with a build system such as cmake.</p>
+<p>The following guide provides instructions on how to compile and add googletest to a C++ project. It uses <code>pkg-config</code> to obtain compiler flags and works with build systems such as <code>cmake</code>.</p>
 
-<p>It is intended to work on Ubuntu but might work on other systems.</p>
+<p>It was tested on Ubuntu but might work on other systems as well.</p>
 
 <h2>Download and compile googletest</h2>
 
-<p>Download latest release from <a href="https://github.com/google/googletest/releases">https://github.com/google/googletest/releases</a></p>
+<p>Download the latest release from <a href="https://github.com/google/googletest/releases">https://github.com/google/googletest/releases</a></p>
 
 <div class="highlight"><pre><span></span>wget https://github.com/google/googletest/archive/release-1.8.0.tar.gz
 </pre></div>
 
-<p>and extract it</p>
+<p>and extract it:</p>
 
 <div class="highlight"><pre><span></span>tar xzf release-1.8.0.tar.gz
 <span class="nb">cd</span> googletest-release-1.8.0
 </pre></div>
 
-<p>After than, we can compile it:</p>
+<p>After that, we can compile it:</p>
 
 <div class="highlight"><pre><span></span>mkdir build <span class="o">&amp;&amp;</span> <span class="nb">cd</span> build
 cmake ..
@@ -88,7 +88,7 @@ make -j
 <div class="highlight"><pre><span></span>sudo cp -r ./googlemock/gtest/libgtest*.a /usr/local/lib/
 </pre></div>
 
-<p>Additionally, you can also add googlemock library (mocking framework):</p>
+<p>Additionally, you can also add googlemock library (C++ framework for mocking objects):</p>
 
 <div class="highlight"><pre><span></span>sudo cp -r ./googlemock/libgmock*.a /usr/local/lib/
 </pre></div>
@@ -100,16 +100,14 @@ make -j
 <div class="highlight"><pre><span></span>pkg-config --libs --cflags gtest
 </pre></div>
 
-<p>If you get a message about gtest not being found (&ldquo;Package gtest was not found in the pkg-config search path&rdquo;) then it essentially means <code>pkg-config</code> cannot find gtest&rsquo;s <code>.pc</code> file which provides configuration.</p>
+<p>If you get a message about gtest not being found (&ldquo;Package gtest was not found in the pkg-config search path&rdquo;) then it means <code>pkg-config</code> cannot find gtest&rsquo;s <code>.pc</code> file which provides the necessary configuration.</p>
 
-<p>It can be added in any of the directories listed by</p>
+<p>Run the following command to see the list of directories read by pkg-config:</p>
 
 <div class="highlight"><pre><span></span>pkg-config --variable pc_path pkg-config
 </pre></div>
 
-<p>e.g. <code>/usr/lib/pkgconfig</code></p>
-
-<p>Create a file named <code>gtest.pc</code> which should like similar to this:</p>
+<p>Choose one of them, e.g. <code>/usr/lib/pkgconfig</code>, and inside that directory create a file named <code>gtest.pc</code> which should like similar to this:</p>
 
 <div class="highlight"><pre><span></span><span class="nv">prefix</span><span class="o">=</span>/usr/local
 <span class="nv">exec_prefix</span><span class="o">=</span><span class="si">${</span><span class="nv">prefix</span><span class="si">}</span>
@@ -123,12 +121,12 @@ Libs: -L<span class="si">${</span><span class="nv">libdir</span><span class="si"
 Cflags: -I<span class="si">${</span><span class="nv">includedir</span><span class="si">}</span>
 </pre></div>
 
-<p>After that, verify that</p>
+<p>Having done that, the following command:</p>
 
 <div class="highlight"><pre><span></span>pkg-config  --libs --cflags gtest
 </pre></div>
 
-<p>produces valid output, i.e. similar to</p>
+<p>should produce valid output, i.e. similar to</p>
 
 <div class="highlight"><pre><span></span>-I/usr/local/include -L/usr/local/lib -lgtest -lpthread
 </pre></div>
@@ -137,7 +135,7 @@ Cflags: -I<span class="si">${</span><span class="nv">includedir</span><span clas
 
 <p>If you use cmake to build your program, you can use <code>pkg-config</code> to find correct compilation flags.</p>
 
-<p>First, in order to add support for <code>pkg-config</code> in cmake add the following in <code>CMakeLists.txt</code>:</p>
+<p>First, in order to add support for <code>pkg-config</code> in cmake, add the following in <code>CMakeLists.txt</code>:</p>
 
 <div class="highlight"><pre><span></span><span class="nb">find_package</span><span class="p">(</span><span class="s">PkgConfig</span><span class="p">)</span>
 </pre></div>
@@ -168,11 +166,14 @@ Cflags: -I<span class="si">${</span><span class="nv">includedir</span><span clas
 
 <p>Running build command e.g. <code>cmake . &amp;&amp; make</code> should now successfully build the executable.</p>
 
-<p>That concludes googletest setup. See the next section if you need to add googlemock (C++ mocking library).</p>
+<p>That concludes googletest installation. See the next section if you need to add googlemock (C++ mocking library).</p>
 
 <h2>Integrating googlemock with a C++ project</h2>
 
-<p>First, ensure you have copied <code>libgmock*.a</code> libraries to <code>/usr/local/lib</code> (see above).</p>
+<p>First, ensure you have copied <code>libgmock*.a</code> libraries to <code>/usr/local/lib</code>, i.e. by executing:</p>
+
+<div class="highlight"><pre><span></span>sudo cp -r ./googlemock/libgmock*.a /usr/local/lib/
+</pre></div>
 
 <p>Create <code>gmock.pc</code> configuration file in <code>/usr/lib/pkgconfig</code> so that <code>pkg-config</code> can resolve compiler flags:</p>
 
