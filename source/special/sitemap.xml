@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://lchsk.com/</loc>
+  <lastmod>2020-09-12T12:05:02+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/index.html</loc>
+  <lastmod>2020-09-12T12:05:02+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/posts.html</loc>
+  <lastmod>2020-09-12T12:05:02+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/projects.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/about.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/benchmarking-concurrent-operations-in-postgresql.html</loc>
+  <lastmod>2020-09-08T22:43:03+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/database-transactions-concurrency-isolation-levels-and-postgresql.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/building-a-video-game-in-c-for-a-weekend-game-jam.html</loc>
+  <lastmod>2020-09-08T22:43:03+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/how-to-use-git-submodules-and-cmake-to-install-c-libraries.html</loc>
+  <lastmod>2020-09-10T20:33:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/stay-paranoid-and-trust-no-one-overview-of-common-security-vulnerabilities-in-web-applications.html</loc>
+  <lastmod>2020-09-10T20:33:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/static-websites-in-golang-and-rust.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/how-to-connect-to-a-host-postgres-database-from-a-docker-container.html</loc>
+  <lastmod>2020-09-12T12:12:42+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/building-a-postgres-gui-client-with-c-and-gtk-sanchosql.html</loc>
+  <lastmod>2020-09-08T22:43:03+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/setting-up-ci-for-cpp-application-with-docker.html</loc>
+  <lastmod>2020-09-10T20:33:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/debugging-with-git-bisect.html</loc>
+  <lastmod>2020-09-10T20:33:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/launching-applications-from-emacs.html</loc>
+  <lastmod>2020-09-10T20:33:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/making-a-turn-based-strategy-game-in-cpp-in-72-hours.html</loc>
+  <lastmod>2020-09-08T22:43:03+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/when-the-compiler-fixes-your-mistakes.html</loc>
+  <lastmod>2020-09-10T20:33:58+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/on-the-benefits-of-a-text-based-user-interface.html</loc>
+  <lastmod>2020-09-08T22:43:03+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/how-to-set-up-googletest-library-from-source.html</loc>
+  <lastmod>2020-09-12T12:12:42+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/xstarter/</loc>
+  <lastmod>2020-05-25T12:55:08+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/privacy-policy.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/command-line-projects.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/games.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/web-projects.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/game-libraries.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/other-projects.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/configuration-projects.html</loc>
+  <lastmod>2020-09-03T22:14:45+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/alive_game/</loc>
+  <lastmod>2020-04-21T17:36:58+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/sanchosql/</loc>
+  <lastmod>2020-01-06T22:38:04+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/xstarter/downloads.html</loc>
+  <lastmod>2020-01-06T22:30:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/xstarter/screenshots-and-videos.html</loc>
+  <lastmod>2020-01-06T22:30:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/xstarter/emacs-interface.html</loc>
+  <lastmod>2020-01-06T22:30:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/xstarter/version-0-8-1-released.html</loc>
+  <lastmod>2020-05-25T12:55:08+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/xstarter/emacs-interface-available.html</loc>
+  <lastmod>2020-01-06T22:30:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/xstarter/version-0-8-0-released.html</loc>
+  <lastmod>2020-05-25T12:55:08+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/xstarter/version-0-7-0-released.html</loc>
+  <lastmod>2020-01-06T22:30:53+00:00</lastmod>
+  <priority>0.64</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/sanchosql/features.html</loc>
+  <lastmod>2020-01-06T22:38:04+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/sanchosql/downloads.html</loc>
+  <lastmod>2020-01-06T22:38:04+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/sanchosql/help.html</loc>
+  <lastmod>2020-01-06T22:38:04+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/sanchosql/contact.html</loc>
+  <lastmod>2020-01-06T22:38:04+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/sanchosql/version-0-1-released.html</loc>
+  <lastmod>2020-01-06T22:38:04+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/sanchosql/how-to-connect-to-postgres-on-aws.html</loc>
+  <lastmod>2020-01-06T22:38:04+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/sanchosql/how-to-connect-to-postgres-on-heroku.html</loc>
+  <lastmod>2020-01-06T22:38:04+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/xstarter/index.html</loc>
+  <lastmod>2020-05-25T12:55:08+00:00</lastmod>
+  <priority>0.51</priority>
+</url>
+<url>
+  <loc>https://lchsk.com/sanchosql/index.html</loc>
+  <lastmod>2020-01-06T22:38:04+00:00</lastmod>
+  <priority>0.41</priority>
+</url>
+
+
+</urlset>

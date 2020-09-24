@@ -18,5 +18,6 @@ Keywords = ["open source", "c++", "python", "go", "rust", "emacs", "linux"]
 
 [static]
 copy = [
-     {from = "special/alive_game", to = "./"}
+     {from = "special/alive_game", to = "./"},
+     {from = "special/sitemap.xml", to = "./"},
 ]
