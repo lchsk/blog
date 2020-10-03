@@ -5,57 +5,74 @@ description: Privacy Policy
 keywords: privacy policy
 ---
 
-Maciej Lechowski built the lchsk.com app as an Ad Supported app. This SERVICE is provided by Maciej Lechowski at no cost and is intended for use as is.
 
-This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal Information if anyone decided to use my Service.
+lchsk.com ("us", "we", "our") operates the www.lchsk.com website (hereinafter referred to as the "Service").
 
-If you choose to use my Service, then you agree to the collection and use of information in relation to this policy. The Personal Information that I collect is used for providing and improving the Service. I will not use or share your information with anyone except as described in this Privacy Policy.
+The following page describes our policies regarding the collection, use, and disclosure of personal data when you use our Service. We use data to provide and improve the Service. By using the Service, you agree to the collection and use of information as described in this policy. 
 
-The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which is accessible at lchsk.com unless otherwise defined in this Privacy Policy.
 
-**Information Collection and Use**
+### Definitions
 
-For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information.
+**Service**
 
-**Log Data**
-
-I want to inform you that whenever you use my Service, in a case of an error in the app I collect data and information (through third party products) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol ("IP") address, device name, operating system version, the time and date of your use of the Service, and other statistics.
+By Service we mean the website www.lchsk.com.
 
 **Cookies**
 
-Cookies are files with a small amount of data that are commonly used as anonymous unique identifiers. These are sent to your browser from the websites that you visit and are stored on your device's internal memory.
+Cookies are files stored in your web browser.
 
-This Service does not use these “cookies” explicitly. However, the app may use third party code and libraries that use “cookies” to collect information and improve their services.
+### Data collected
 
-**Service Providers**
+We collect several types of information for purposed of providing and improving the Service to you.
 
-I may employ third-party companies and individuals due to the following reasons:
+**Personal data**
 
-*   To facilitate our Service;
-*   To provide the Service on our behalf;
-*   To perform Service-related services; or
-*   To assist us in analyzing how our Service is used.
+When using our Service, you may be asked to provide certain personally identifiable information that can be used to contact or identify you. Those include, but are not limited to, information such as email address, cookies, and usage data.
 
-I want to inform users of this Service that these third parties may have access to your Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose.
+**Usage data**
 
-**Security**
+We collect information about how the Service is used. It may include data such as your device's IP address, web browser details, pages of our Service that you visit, the time and date of you visit, how much time you spent visting our pages, and other technical details.
 
-I value your trust in providing us your Personal Information, thus we are striving to use commercially acceptable means of protecting it. But remember that no method of transmission over the internet, or method of electronic storage is 100% secure and reliable, and I cannot guarantee its absolute security.
+**Tracking and cookies data**
 
-**Links to Other Sites**
+The Service uses cookies and similar technologies to track the activity on our Service. Cookies are small files held by your web browser. We use them to store information to provide, improve, and analyze our Service. You can set your web browser to refuse accepting cookies. If you do so, some parts of the Service may not be available.
 
-This Service may contain links to other sites. If you click on a third-party link, you will be directed to that site. Note that these external sites are not operated by me. Therefore, I strongly advise you to review the Privacy Policy of these websites. I have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites or services.
+Third-parties used by the Service may place and read cookies, or may use web beacons to collect information.
 
-**Children’s Privacy**
+The Service uses the following third-parties that may use cookies, or other technologies such as web beacons, to collect and use data:
 
-These Services do not address anyone under the age of 13. I do not knowingly collect personally identifiable information from children under 13. In the case I discover that a child under 13 has provided me with personal information, I immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact me so that I will be able to do necessary actions.
+- Google Analytics
+- Google AdSense
 
-**Changes to This Privacy Policy**
+Read how Google uses information from this Service: [How Google uses information from sites or apps that use our services](https://policies.google.com/technologies/partner-sites)
 
-I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
 
-This policy is effective as of 2020-09-03.
+### Use of data
 
-**Contact Us**
+The Service uses the collected data:
 
-If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at mjlechowski at gmail.com.
+- To provide and maintain the Service.
+- To monitor the usage of our Service.
+- To analyze information to improve the Service.
+- To fix technical issues with the Service.
+
+### Service providers
+
+We may use third-party providers to help run our Service, perform various tasks related to our Service, or help us monitor and analyze the Service. Third-parties used by the Service may place and read cookies, or may use web beacons to collect information.
+The following third-parties have access to your personal data only to perform those tasks on our behalf.
+
+- Google Analytics
+- Google AdSense
+
+For more information about how Google uses data, see: [How Google uses information from sites or apps that use our services](https://policies.google.com/technologies/partner-sites)
+
+### Children's privacy
+
+Our Service is not intended to be used by anyone under the age of 18.
+
+### Changes to this privacy policy
+
+The privacy policy may be updated from time to time. If so, the new policy will be available on this page.
+
+This policy is effective as of 2020-10-03.
+
