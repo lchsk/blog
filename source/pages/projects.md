@@ -5,6 +5,8 @@ description: Projects - personal projects
 keywords: lchsk, projects, github, sanchosql, xstarter, cpp, go, golang, c, gamedev
 ---
 
+- {{@xstarter}}
+
 - {{@command-line-projects}}
 - {{@games}}
 - {{@web-projects}}

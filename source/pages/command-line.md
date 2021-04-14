@@ -17,7 +17,7 @@ It lives in terminal and works well with tiling window managers (e.g. xmonad, i3
 
 Links:
 
-- [Website](xstarter "xstarter website")
+- [Website](xstarter.html "xstarter website")
 - [Source code](https://github.com/lchsk/xstarter "xstarter source code")
 
 <hr/>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="starter - GNU/Linux terminal application launcher">
+    <meta name="keywords" content="xstarter, c, gnu gpl, linux, gnu, terminal, urxvt, gnome, xterm, konsole, emacs, vim">
+    <meta name="author" content="Maciej Lechowski">
+    <title>xstarter - Application launcher for Linux </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/styles2.css">
+    <link rel="alternate" type="application/rss+xml" href="posts.xml" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-119994839-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-119994839-1');
+</script>
+<script data-ad-client="ca-pub-1191354220196405" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  </head>
+  <body>
+  <div class="container">
+    <header class="blog-header py-3">
+  <div class="row flex-nowrap justify-content-between align-items-center">
+    <div class="col-4 pt-1">
+      <a class="text-muted" href="posts.xml">Subscribe to RSS</a>
+    </div>
+    <div class="col-4 text-center">
+      <a class="blog-header-logo text-dark" href="index.html">lchsk.com</a>
+      <p>Home page of Maciej Lechowski</p>
+    </div>
+    <div class="col-4 d-flex justify-content-end align-items-center">
+    </div>
+  </div>
+</header>
+
+<div class="nav-scroller py-1 mb-2">
+  <nav class="nav d-flex">
+    <a class="p-2 text-muted" href="index.html">Home</a>
+    <a class="p-2 text-muted" href="posts.html">Posts</a>
+    <a class="p-2 text-muted" href="projects.html">Projects</a>
+    <a class="p-2 text-muted" href="about.html">About</a>
+  </nav>
+</div>
+
+
+
+    <main role="main" class="container">
+      <div class="row">
+        <div class="col-md-8 blog-main">
+          <div class="blog-post">
+            <h2>xstarter - Application launcher for Linux </h2>
+            <p><code>xstarter</code> is an application launcher for Linux. It lives in terminal and works well with tiling window managers (e.g. xmonad, i3 etc).</p>
+
+<p><img src="./data/projects/xstarter.png" alt="xstarter screenshot" /></p>
+
+<h2>Downloads</h2>
+
+<ul>
+<li><p>Get get <a href="https://github.com/lchsk/xstarter/releases">DEB and RPM packages here</a></p></li>
+
+<li><p>It is available on <a href="https://aur.archlinux.org/packages/xstarter">AUR</a></p></li>
+
+<li><p>It can be easily compiled from <a href="https://github.com/lchsk/xstarter">source code</a></p></li>
+</ul>
+
+<h2>Features</h2>
+
+<ul>
+<li><p>a clean, simple interface that works on various terminals</p></li>
+
+<li><p>able to search for applications using environment variables (e.g. $PATH) and user-provided list of directories</p></li>
+
+<li><p>can be configured to launch via a key-binding</p></li>
+
+<li><p>can optionally open an application in terminal (see key shortcuts)</p></li>
+
+<li><p>allows to provide arguments to applications (see key shortcuts)</p></li>
+
+<li><p>remembers previously launched applications allowing to find them more quickly</p></li>
+
+<li><p>allows fuzzy search (parts of the query can be separated with a space)</p></li>
+
+<li><p>applications can be launched with 1, 2, &hellip;, 0 keys, depending on their position in the search results</p></li>
+
+<li><p>fast, uses cache by default</p></li>
+
+<li><p>easy to configure via a single text file</p></li>
+</ul>
+
+<h2>Running xstarter</h2>
+
+<p>xstarter needs to be launched from a terminal (<code>$ xstarter</code>). It is useful to run it using a key binding, preferably by binding your preferred key to a command starting xstarter from a terminal of your choice, e.g. xterm -e xstarter. Alternatively, you can simply bind it to xstarter in which case xstarter will open itself in a terminal.</p>
+
+<p>You can also create an alias in your shell (e.g. bash, zsh): <code>alias xs=xstarter</code>.</p>
+
+<p>It should run on any modern terminal. It is tested on: <code>xterm, rxvt, gnome-terminal, xfce4-terminal, konsole</code>. In case of any problems please report it.</p>
+
+<h2>Configuration</h2>
+
+<p>Configuration file is available and includes comments that explain configuration variables. It is located in the <code>~/.xstarter.d/</code> directory.</p>
+
+<h2>Providing arguments to applications</h2>
+
+<p>You can provide arguments to applications you wish to open.</p>
+
+<p>If the number of search results is equal to 1, you can provide arguments the selected application should be started with, e.g. <code>surf gnu.org</code></p>
+
+<p>You can provide multiple arguments, e.g. <code>emacs -nw -Q</code></p>
+
+<p>You can select the application you want to provide arguments for by pressing Tab key</p>
+
+<p>This feature works both with GUI (press Enter to start) and terminal applications (press C-o to start)</p>
+
+<h2>Key shortcuts</h2>
+
+<p>Use numbers 1..9 and 0 to open an application from the list.</p>
+
+<p>By default, the following shortcuts are available:</p>
+
+<ul>
+<li><p><code>Return (enter)</code> Open selected application</p></li>
+
+<li><p><code>C-o</code> Open selected application in terminal (defined by &ldquo;terminal&rdquo; variable in the config file, xterm by default)</p></li>
+
+<li><p><code>C-n</code> Move down the list</p></li>
+
+<li><p><code>C-p</code> Move up the list</p></li>
+
+<li><p><code>C-g</code> Quit</p></li>
+
+<li><p><code>C-d</code> Delete entered character</p></li>
+
+<li><p><code>C-w</code> Delete entire query</p></li>
+
+<li><p><code>Tab</code> Auto-complete using current selection; allow to provide arguments</p></li>
+</ul>
+
+<p><a href="https://github.com/lchsk/xstarter">source code</a></p>
+
+<h2>News</h2>
+
+<h3>2020-05-25</h3>
+
+<p>New version of <strong>xstarter</strong> (v0.8.1) was released today.</p>
+
+<p>It&rsquo;s a tiny release but it contains necessary fixes for xstarter to compile with gcc 10.</p>
+
+<h3>2018-08-28</h3>
+
+<p>There&rsquo;s <a href="https://github.com/lchsk/helm-xstarter">Emacs interface</a> available for xstarter!</p>
+
+<p><img src="data/helm_xstarter.png" alt="`helm-xstarter` session" /></p>
+
+<p>It uses Helm interface that many Emacs users are familiar with.</p>
+
+<p>It loads a list of installed applications and lets a user select one to launch. It also records recently open programs and shows them on top.</p>
+
+<p><strong>See <a href="https://github.com/lchsk/helm-xstarter">github page for installation instructions</a></strong>!</p>
+
+<h3>2018-08-27</h3>
+
+<p>New version of <strong>xstarter</strong> (v0.8.0) was released today.</p>
+
+<p>Main intention of this release was to enable xstarter to work with external programs. I want to be able to use xstarter via Emacs and I&rsquo;m working on a small package that will handle that. With this release xstarter is able to print a list of programs that it stored in cache (it can be tested by running <code>xstarter -P</code>). External applications can use it load the list of available programs and show it to users. In order to start a program, e.g. Firefox, use command <code>xstarter -e firefox</code>. It can be used on its own to start and detach applications from terminal as well by other software.</p>
+
+<p>In this release I&rsquo;ve also fixed an interesting bug that broke xstarter if it was built without compiler optimisation. I wrote about that bug <a href="https://lchsk.com/when-the-compiler-fixes-your-mistakes.html">on my blog</a>.</p>
+
+<h3>2018-03-26</h3>
+
+<p>New version of <strong>xstarter</strong> is available (v0.7.0). It adds one useful feature: you can now provide arguments to the application. It works for GUI and terminal programs alike. This allows to start a program like this: <code>surf gnu.org</code> (GUI) or e.g. <code>emacs -nw -Q</code>.</p>
+
+<p><strong>How to use it?</strong></p>
+
+<p>If the number of search results is equal to 1, you can provide arguments the selected application should be started with, e.g. <code>surf gnu.org</code>. You can provide multiple arguments, e.g. <code>emacs -nw -Q</code>. You can select the application you want to provide arguments for by pressing <code>Tab</code> key
+This feature works both with GUI (press Enter to start) and terminal applications (press C-o to start)</p>
+
+<h2>Screenshots</h2>
+
+<p><img src="./data/xstarter.png" alt="xstarter screenshot" /></p>
+
+<p><img src="./data/xstarter_1.png" alt="xstarter screenshot" /></p>
+
+<h2>Emacs interface</h2>
+
+<p><a href="https://github.com/lchsk/helm-xstarter">Emacs package <code>helm-xstarter</code></a> offers an intuitive interface to launch applications via Emacs.</p>
+
+<p>It loads a list of installed applications and lets a user select one to launch.</p>
+
+<p>It also records recently open programs and shows them on top.</p>
+
+<p><img src="data/helm_xstarter.png" alt="`helm-xstarter` session" /></p>
+
+<p><strong>See <a href="https://github.com/lchsk/helm-xstarter">github page for installation instructions</a></strong>!</p>
+
+          </div>
+        </div>
+
+        <aside class="col-md-4 blog-sidebar">
+    <div class="p-4 mb-3 bg-light rounded">
+        <h4 class="font-italic"><a href="about.html" title="Maciej Lechowski - contact / about">About</a></h4>
+        <p class="mb-0">
+            Posts about technology, programming, and personal projects.
+        </p>
+        <p>
+            Contact: <a href="about.html" title="Maciej Lechowski - contact / about">About</a>
+        </p>
+    </div>
+
+    <div class="p-4 mb-3 bg-light rounded">
+        <h4 class="font-italic"><a href="projects.html" title="Projects - personal projects">Projects</a></h4>
+        <p class="mb-0">
+            <a href="/xstarter.html" title="xstarter - linux terminal application launcher">xstarter</a>
+
+        </p>
+        <p class="text-muted">
+            Application launcher for Linux
+        </p>
+        <p>
+            See more: <a href="projects.html" title="Projects - personal projects">Projects</a>
+        </p>
+    </div>
+
+    <div class="p-4">
+        <h4 class="font-italic">Elsewhere</h4>
+        <ol class="list-unstyled">
+            <li><a href="https://github.com/lchsk">GitHub</a></li>
+            <li><a href="https://twitter.com/lchsk">Twitter</a></li>
+            <li><a href="https://www.linkedin.com/in/maciej-lechowski">Linkedin</a></li>
+        </ol>
+    </div>
+</aside><!-- /.blog-sidebar -->
+      </div><!-- /.row -->
+
+    </main><!-- /.container -->
+
+    <footer class="blog-footer">
+      &copy; 2020 lchsk.com
+<p>
+    <a href="privacy-policy.html" class="text-muted small">Privacy Policy</a>
+</p>
+
+
+
+    </footer>
+  </div>
+  </body>
+</html>

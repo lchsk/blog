@@ -34,7 +34,6 @@ SanchoSQL is a desktop client application for PostgreSQL database. It allows vie
 
 Links: 
 
-- [Website](sanchosql)
 - [Source code](https://github.com/lchsk/sanchosql)
 
 <hr/>
